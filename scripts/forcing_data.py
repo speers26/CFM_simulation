@@ -1,6 +1,5 @@
 from force.process import ProcessMAR
 import yaml
-import numpy
 
 with open("config.yaml", "r") as file:
     config = yaml.safe_load(file)
