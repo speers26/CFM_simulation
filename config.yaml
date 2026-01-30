@@ -3,6 +3,12 @@
 ## Directories
 CFM_repo_path: /home/speersm/luna/CPOM/speersm/CommunityFirnModel/CFM_main # path to the Community Firn Model repository, should contain CFM_main folder
 MAR_data_path: /home/speersm/luna/CPOM/briggsk/RCM_data/Data/MAR/AIS/27.5km # path to MAR forcing data directory stored on luna
+processed_data_path: /home/speersm/luna/CPOM/speersm/CFM_simulation/data # path to store processed forcing data
+
+
+# Period
+start_year: 1979
+end_year: 1979
 
 ## Sector
 sector: 1.0 # only take data from this sector in MAR files (think is ice vs non-ice)
