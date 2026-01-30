@@ -1,0 +1,7 @@
+[project]
+name = "cfm_sim"
+version = "0.1.0"
+description = "Community firn model simulation with forcing data processing and gridded simulation."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
