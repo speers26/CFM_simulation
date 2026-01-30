@@ -1,5 +1,5 @@
 [project]
-name = "cfm_sim"
+name = "cfm"
 version = "0.1.0"
 description = "Community firn model simulation with forcing data processing and gridded simulation."
 readme = "README.md"
