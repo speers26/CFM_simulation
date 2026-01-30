@@ -10,4 +10,3 @@ if __name__ == "__main__":
 
     processor = ProcessMAR(borehole_lat, borehole_lon)
     borehole_MAR_data = processor.process()
-

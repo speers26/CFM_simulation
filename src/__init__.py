@@ -1,1 +1,1 @@
-""" CFM grid source package """
+"""CFM grid source package"""

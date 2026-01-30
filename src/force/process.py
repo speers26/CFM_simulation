@@ -12,6 +12,7 @@ with open("config.yaml", "r") as file:
 
 logging.basicConfig(level=logging.INFO)
 
+
 class ProcessMAR:
     def __init__(self, borehole_lat: float, borehole_lon: float) -> None:
         """Initialize with daily MAR dataset and borehole coordinates. Reads in .nc files from MAR data path specified in config.
@@ -81,15 +82,34 @@ class ProcessMAR:
         """
         logging.info(f"Processing XR data at year {xr_data['TIME'].dt.year.values[0]}")
 
-        # extract data at borehole location
+        # get indices of closest grid point to borehole
         lat_diff = np.abs(xr_data["LAT"] - self.borehole_lat)
         lon_diff = np.abs(xr_data["LON"] - self.borehole_lon)
         distance = np.sqrt(lat_diff**2 + lon_diff**2)
         y_idx, x_idx = np.unravel_index(distance.argmin(), distance.shape)
-        borehole_data = xr_data.isel(
-            Y15_176=y_idx,
-            X18_215=x_idx,
+
+        # find coordinate names for X/Y (prefer MAR defaults, fallback to X/Y)
+        x_coord_candidates = ["X18_215", "X"]
+        y_coord_candidates = ["Y15_176", "Y"]
+        x_coord = next(
+            (name for name in x_coord_candidates if name in xr_data.coords), None
         )
+        y_coord = next(
+            (name for name in y_coord_candidates if name in xr_data.coords), None
+        )
+        if x_coord is None or y_coord is None:
+            raise ValueError(
+                f"Could not find appropriate X/Y coordinate names. Found coords: {list(xr_data.coords)}"
+            )
+        logging.info(
+            "Using coordinates: %s for x and %s for y for year %s",
+            x_coord,
+            y_coord,
+            xr_data["TIME"].dt.year.values[0],
+        )
+
+        # find data at borehole location
+        borehole_data = xr_data.isel(**{y_coord: y_idx, x_coord: x_idx})
 
         # convert to dataframe
         borehole_df = (
