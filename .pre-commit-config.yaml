@@ -3,5 +3,6 @@ repos:
     rev: v0.7.3
     hooks:
       - id: ruff
-        args: ["--force-exclude"]
-        stages: ["push"]
+        stages: ["pre-push"]
+      - id: ruff-format
+        stages: ["pre-push"]
