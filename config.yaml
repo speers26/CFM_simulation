@@ -11,7 +11,7 @@ processed_data_path: /home/speersm/luna/CPOM/speersm/CFM_simulation/data # path 
 start_year: 1979
 end_year: 2025
 
-# Borehold location
+# Borehole location
 borehole_lat: -66.403
 borehole_lon: -63.212
 
