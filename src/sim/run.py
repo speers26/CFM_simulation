@@ -43,7 +43,7 @@ class CFMRun:
         self._run_cfm()
 
     def _read_force_data(self) -> None:
-        """ "
+        """
         Read in the forcing data from the MAR data CSV file.
         Raises FileNotFoundError if the file does not exist.
         """
