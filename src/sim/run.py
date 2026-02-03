@@ -13,9 +13,8 @@ with open("config.yaml", "r") as file:
 logging.basicConfig(level=logging.INFO)
 
 sys.path.append(config["CFM_repo_path"])
-import RCMpkl_to_spin as RCM  # noqa: F401 E402 # type: ignore
+from RCMpkl_to_spin import makeSpinFiles  # noqa: F401 E402 # type: ignore
 from firn_density_nospin import FirnDensityNoSpin  # noqa: F401 E402 # type: ignore
-
 
 class CFMRun:
     def __init__(self) -> None:
@@ -66,7 +65,7 @@ class CFMRun:
         # format the CFM forcing data (including creating the spin up)
         # climateTS is a dictionary with the various climate fields needed, in the correct units.
         climateTS, StpsPerYr, depth_S1, depth_S2, grid_bottom, SEBfluxes = (
-            RCM.makeSpinFiles(
+            makeSpinFiles(
                 self._force_data,
                 timeres=self._cfm_config["DFresample"],
                 Tinterp="mean",
