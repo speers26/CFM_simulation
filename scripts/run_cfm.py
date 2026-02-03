@@ -34,14 +34,14 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.lat is not None and args.lon is not None and args.physrho is not None:
-        config["borehole_lat"] = args.lat
-        config["borehole_lon"] = args.lon
-        config["physrho"] = args.physrho
+        borehole_lat = args.lat
+        borehole_lon = args.lon
+        physRho = args.physrho
         logging.info(
-            f"Using command line arguments: lat={config['borehole_lat']}, lon={config['borehole_lon']}, physrho={config['physrho']}"
+            f"Using command line arguments: lat={borehole_lat}, lon={borehole_lon}, physrho={physRho}"
         )
     else:
         logging.info("Using borehole location and physrho from config.yaml")
 
-    ProcessMAR().process()
-    CFMRun().run()
+    ProcessMAR(borehole_lat, borehole_lon).process()
+    CFMRun(physRho).run()

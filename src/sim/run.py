@@ -18,13 +18,16 @@ from firn_density_nospin import FirnDensityNoSpin  # noqa: E402 # type: ignore
 
 
 class CFMRun:
-    def __init__(self) -> None:
+    def __init__(self, physRho) -> None:
         """Initialize CFM Run with configuration from config.yaml.
 
         Sets up paths and variables needed for the CFM run. Including:
         - Forcing data path from which to read MAR data
         - Output path to save CFM results
         - JSON configuration name saving of CFM configuration
+
+        Args:
+            physRho (str): Physical densification scheme to use in CFM model.
         """
 
         self._cfm_input_path: str = f"{config['CFM_data_path']}/cfm_input"
@@ -34,6 +37,8 @@ class CFMRun:
         self._cfm_config: dict = config["cfm_config"]
         self._json_config_name = f"CFMconfig_{config['borehole_lat']}_{config['borehole_lon']}_{self._cfm_config['physRho']}.json"
 
+        # set physRho from argument in case we've used command line to override config
+        self._cfm_config["physRho"] = physRho
         self._force_data: pd.DataFrame = None
 
     def run(self) -> None:

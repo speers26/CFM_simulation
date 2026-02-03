@@ -14,11 +14,16 @@ logging.basicConfig(level=logging.INFO)
 
 
 class ProcessMAR:
-    def __init__(self) -> None:
-        """Initialize with daily MAR dataset and borehole coordinates. Reads in .nc files from MAR data path specified in config."""
+    def __init__(self, borehole_lat: float, borehole_lon: float) -> None:
+        """Initialize with daily MAR dataset at specified borehole coordinates. Reads in .nc files from MAR data path specified in config.
+        
+        Args:
+            borehole_lat (float): Latitude of borehole location.
+            borehole_lon (float): Longitude of borehole location.
+        """
 
-        self._borehole_lat: float = config["borehole_lat"]
-        self._borehole_lon: float = config["borehole_lon"]
+        self._borehole_lat: float = borehole_lat
+        self._borehole_lon: float = borehole_lon
         self._save_path: str = f"{config['CFM_data_path']}/cfm_input/MAR_{self._borehole_lat}_{self._borehole_lon}_{config['start_year']}_{config['end_year']}.csv"
 
         self._daily_xr: List[xr.Dataset] = None
