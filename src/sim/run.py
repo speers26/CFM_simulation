@@ -16,6 +16,7 @@ sys.path.append(config["CFM_repo_path"])
 from RCMpkl_to_spin import makeSpinFiles  # noqa: F401 E402 # type: ignore
 from firn_density_nospin import FirnDensityNoSpin  # noqa: F401 E402 # type: ignore
 
+
 class CFMRun:
     def __init__(self) -> None:
         """Initialize CFM Run with configuration from config.yaml.
