@@ -30,7 +30,7 @@ class CFMRun:
         self._cfm_input_path: str = f"{config['CFM_data_path']}/cfm_input"
         self._cfm_output_path: str = f"{config['CFM_data_path']}/cfm_output"
 
-        # load cdm config
+        # load cfm config
         self._cfm_config: dict = config["cfm_config"]
         self._json_config_name = f"CFMconfig_{config['borehole_lat']}_{config['borehole_lon']}_{self._cfm_config['physRho']}.json"
 
