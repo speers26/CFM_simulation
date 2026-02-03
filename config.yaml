@@ -5,7 +5,7 @@
 ## Directories
 CFM_repo_path: /home/speersm/luna/CPOM/speersm/CommunityFirnModel/CFM_main # path to the Community Firn Model repository, should contain CFM_main folder
 MAR_data_path: /home/speersm/luna/CPOM/briggsk/RCM_data/Data/MAR/AIS/27.5km # path to MAR forcing data directory stored on luna
-processed_data_path: /home/speersm/luna/CPOM/speersm/CFM_simulation/data/cfm_input # path to store processed forcing data
+processed_data_path: /home/speersm/luna/CPOM/speersm/data/cfm_input # path to store processed forcing data
 
 # Period
 start_year: 1979
@@ -20,7 +20,8 @@ sector: 1.0 # only take data from this sector in MAR files (think is ice vs non-
 
 ## Mapping converting MAR columns to CFM input columns
 MAR_to_CFM_column_map:
-  TTZ: TSKIN # furace termperature
+  TTZ: T2m # 2m above surface termperature
+  TI1: TSKIN # surface temperature
   SU: SUBLIM # sublimation
   SHF: QH # sensible heat flux
   LHF: QL # latent heat flux
