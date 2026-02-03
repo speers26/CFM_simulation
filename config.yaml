@@ -38,6 +38,7 @@ MAR_to_CFM_column_map:
 sde: 1995.0 #spin date end
 runid: -9999 
 rho_bottom: 910 # density at bottom boundary condition
+sublim_sf: 1.0 #sublimation scaling factor, -1 for MERRA2 data, not sure for MAR data
 
 ## config for CFM_main, will be saved as json in output folder
 cfm_config:

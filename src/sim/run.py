@@ -87,7 +87,7 @@ class CFMRun:
             )
         )
         climateTS["SUBLIM"] = (
-            -1 * climateTS["SUBLIM"]
+            config["sublim_sf"] * climateTS["SUBLIM"]
         )  # ADDED THIS FOR MERRA2 TO GET THE SIGN CORRECT.
         climateTS["forcing_data_start"] = config["start_year"]
 
