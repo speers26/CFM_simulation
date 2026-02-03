@@ -130,7 +130,7 @@ class ProcessMAR:
         # drop everything apart from outlay 0.0 (surface layer)
         borehole_df = borehole_df[borehole_df["OUTLAY"] == 0.0]
 
-        # rename columms to match CFM input column names
+        # rename columns to match CFM input column names
         borehole_df.rename(columns=mapping, inplace=True)
         borehole_df.set_index("TIME", inplace=True)
 
