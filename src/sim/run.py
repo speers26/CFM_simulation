@@ -35,7 +35,7 @@ class CFMRun:
         self._json_config_name = f"CFMconfig_{config['borehole_lat']}_{config['borehole_lon']}_{self._cfm_config['physRho']}.json"
 
         self._force_data: pd.DataFrame = None
-    
+
     def run(self) -> None:
         """Run the CFM model with the specified configuration and forcing data."""
 
@@ -62,10 +62,14 @@ class CFMRun:
         This code is mostly copied from main.py in the CFM repository.
         """
 
-        # set output folder in config 
-        self._cfm_config["resultsFolder"] = f"{self._cfm_output_path}/CFMoutput_{config['borehole_lat']}_{config['borehole_lon']}_{self._cfm_config['physRho']}"
+        # set output folder in config
+        self._cfm_config["resultsFolder"] = (
+            f"{self._cfm_output_path}/CFMoutput_{config['borehole_lat']}_{config['borehole_lon']}_{self._cfm_config['physRho']}"
+        )
         os.makedirs(self._cfm_config["resultsFolder"], exist_ok=True)
-        logging.info(f"CFM output will be saved to {self._cfm_config['resultsFolder']}.")
+        logging.info(
+            f"CFM output will be saved to {self._cfm_config['resultsFolder']}."
+        )
 
         # format the CFM forcing data (including creating the spin up)
         # climateTS is a dictionary with the various climate fields needed, in the correct units.
