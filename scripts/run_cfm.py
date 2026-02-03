@@ -3,7 +3,7 @@ Reads in and processes MAR forcing data at specified borehole location, then sav
 processed data directory as pandas dataframe. Borehole location, dataframe column names, and save location
 are specified in config file.
 
-Then runs the CFM model using the processed forcing data and configuration from config file. Saves CFM output in 
+Then runs the CFM model using the processed forcing data and configuration from config file. Saves CFM output in
 location specified in config file. Also saves the CFM configuration used for the run as a JSON file in the output directory.
 
 Usage:

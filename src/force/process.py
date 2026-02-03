@@ -15,8 +15,7 @@ logging.basicConfig(level=logging.INFO)
 
 class ProcessMAR:
     def __init__(self) -> None:
-        """Initialize with daily MAR dataset and borehole coordinates. Reads in .nc files from MAR data path specified in config.
-        """
+        """Initialize with daily MAR dataset and borehole coordinates. Reads in .nc files from MAR data path specified in config."""
 
         self._borehole_lat: float = config["borehole_lat"]
         self._borehole_lon: float = config["borehole_lon"]
@@ -36,8 +35,10 @@ class ProcessMAR:
         """
 
         if os.path.exists(self._save_path):
-            logging.info(f"Processed MAR data already exists at {self._save_path}. Skipping processing.")
-        
+            logging.info(
+                f"Processed MAR data already exists at {self._save_path}. Skipping processing."
+            )
+
         else:
             logging.info("Reading MAR data...")
             self._daily_xr = self._read_data()

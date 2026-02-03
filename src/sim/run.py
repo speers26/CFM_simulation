@@ -97,7 +97,7 @@ class CFMRun:
 
         # write updated config to json
         with open(
-            f'{self._cfm_output_path}/{self._json_config_name}',
+            f"{self._cfm_output_path}/{self._json_config_name}",
             "w",
         ) as fp:
             fp.write(
@@ -108,7 +108,7 @@ class CFMRun:
 
         ### Create CFM instance by passing config file and forcing data, then run the model
         firn = FirnDensityNoSpin(
-            f'{self._cfm_output_path}/{self._json_config_name}',
+            f"{self._cfm_output_path}/{self._json_config_name}",
             climateTS=climateTS,
             NewSpin=self._cfm_config["NewSpin"],
             SEBfluxes=SEBfluxes,
