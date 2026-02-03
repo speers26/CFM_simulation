@@ -44,4 +44,4 @@ if __name__ == "__main__":
         logging.info("Using borehole location and physrho from config.yaml")
 
     ProcessMAR(borehole_lat, borehole_lon).process()
-    CFMRun(physRho).run()
+    CFMRun(borehole_lat, borehole_lon, physRho).run()

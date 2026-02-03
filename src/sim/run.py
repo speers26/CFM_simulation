@@ -18,7 +18,7 @@ from firn_density_nospin import FirnDensityNoSpin  # noqa: E402 # type: ignore
 
 
 class CFMRun:
-    def __init__(self, physRho) -> None:
+    def __init__(self, borehole_lat: float, borehole_lon: float, physRho: str) -> None:
         """Initialize CFM Run with configuration from config.yaml.
 
         Sets up paths and variables needed for the CFM run. Including:
@@ -27,6 +27,8 @@ class CFMRun:
         - JSON configuration name saving of CFM configuration
 
         Args:
+            borehole_lat (float): Latitude of borehole location.
+            borehole_lon (float): Longitude of borehole location.
             physRho (str): Physical densification scheme to use in CFM model.
         """
 
@@ -35,10 +37,12 @@ class CFMRun:
 
         # load cfm config
         self._cfm_config: dict = config["cfm_config"]
-        self._json_config_name = f"CFMconfig_{config['borehole_lat']}_{config['borehole_lon']}_{self._cfm_config['physRho']}.json"
+        self._json_config_name = f"CFMconfig_{borehole_lat}_{borehole_lon}_{self._cfm_config['physRho']}.json"
 
-        # set physRho from argument in case we've used command line to override config
+        # set physRho and borehole loc from argument in case we've used command line to override config
         self._cfm_config["physRho"] = physRho
+        self._cfm_config["borehole_lat"] = borehole_lat
+        self._cfm_config["borehole_lon"] = borehole_lon
         self._force_data: pd.DataFrame = None
 
     def run(self) -> None:
@@ -54,7 +58,7 @@ class CFMRun:
         """
 
         # Read in forcing data
-        force_data_path = f"{self._cfm_input_path}/MAR_{config['borehole_lat']}_{config['borehole_lon']}_{config['start_year']}_{config['end_year']}.csv"
+        force_data_path = f"{self._cfm_input_path}/MAR_{self._cfm_config['borehole_lat']}_{self._cfm_config['borehole_lon']}_{config['start_year']}_{config['end_year']}.csv"
         if not os.path.exists(force_data_path):
             raise FileNotFoundError(
                 f"Forcing data file not found: {force_data_path}. Run read_force_data.py to generate the file."
@@ -69,7 +73,7 @@ class CFMRun:
 
         # set output folder in config
         self._cfm_config["resultsFolder"] = (
-            f"{self._cfm_output_path}/CFMoutput_{config['borehole_lat']}_{config['borehole_lon']}_{self._cfm_config['physRho']}"
+            f"{self._cfm_output_path}/CFMoutput_{self._cfm_config['borehole_lat']}_{self._cfm_config['borehole_lon']}_{self._cfm_config['physRho']}"
         )
         os.makedirs(self._cfm_config["resultsFolder"], exist_ok=True)
         logging.info(

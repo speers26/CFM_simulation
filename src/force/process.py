@@ -29,7 +29,7 @@ class ProcessMAR:
         self._daily_xr: List[xr.Dataset] = None
         self._x_idx: int = None
         self._y_idx: int = None
-        self._borehold_data: xr.Dataset = None
+        self._borehole_data: xr.Dataset = None
 
     def process(self) -> xr.Dataset:
         """
