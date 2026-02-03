@@ -5,11 +5,11 @@
 ## Directories
 CFM_repo_path: /home/speersm/luna/CPOM/speersm/CommunityFirnModel/CFM_main # path to the Community Firn Model repository, should contain CFM_main folder
 MAR_data_path: /home/speersm/luna/CPOM/briggsk/RCM_data/Data/MAR/AIS/27.5km # path to MAR forcing data directory stored on luna
-processed_data_path: /home/speersm/luna/CPOM/speersm/CFM_simulation/data # path to store processed forcing data
+processed_data_path: /home/speersm/luna/CPOM/speersm/CFM_simulation/data/cfm_input # path to store processed forcing data
 
 # Period
-start_year: 2008
-end_year: 2025
+start_year: 1979
+end_year: 2024
 
 # Borehole location
 borehole_lat: -66.403

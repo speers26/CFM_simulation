@@ -130,4 +130,10 @@ class ProcessMAR:
         borehole_df.rename(columns=mapping, inplace=True)
         borehole_df.set_index("TIME", inplace=True)
 
+        # drop unneeded columns - should just be coordinates now
+        borehole_df = borehole_df[list(mapping.values())]
+
+        # convert temperature to Kelvin
+        borehole_df["TSKIN"] = borehole_df["TSKIN"] + 273.15
+
         return borehole_df
