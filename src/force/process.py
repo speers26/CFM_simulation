@@ -24,7 +24,7 @@ class ProcessMAR:
 
         self.borehole_lat: float = borehole_lat
         self.borehole_lon: float = borehole_lon
-        self._save_path: str = f"{config['processed_data_path']}/MAR_{self.borehole_lat}_{self.borehole_lon}_{config['start_year']}_{config['end_year']}.csv"
+        self._save_path: str = f"{config['CFM_data_path']}/cfm_input/MAR_{self.borehole_lat}_{self.borehole_lon}_{config['start_year']}_{config['end_year']}.csv"
 
         self._daily_xr: List[xr.Dataset] = None
         self._x_idx: int = None

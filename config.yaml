@@ -5,7 +5,7 @@
 ## Directories
 CFM_repo_path: /home/speersm/luna/CPOM/speersm/CommunityFirnModel/CFM_main # path to the Community Firn Model repository, should contain CFM_main folder
 MAR_data_path: /home/speersm/luna/CPOM/briggsk/RCM_data/Data/MAR/AIS/27.5km # path to MAR forcing data directory stored on luna
-processed_data_path: /home/speersm/luna/CPOM/speersm/data/cfm_input # path to store processed forcing data
+CFM_data_path: /home/speersm/luna/CPOM/speersm/data/ # path to store CFM input and output data
 
 # Period
 start_year: 1979
@@ -33,3 +33,22 @@ MAR_to_CFM_column_map:
   ME: SMELT # melt
 
 ### ----------------- CFM Simulation ----------------- ###
+
+## densification physics
+## chosen from: ["HLdynamic","HLSigfus","Li2004","Li2011","Helsen2008","Arthern2010S","Arthern2010T","Li2015","Goujon2003","Barnola1991","Morris2014","KuipersMunneke2015","Crocus","Ligtenberg2011"]
+physRho: Crocus 
+
+## model run parameters
+sde: 1995.0 #spin date end
+runid: -9999 
+grid_output_res: 0.05
+variable_srho: false # whether to use variable surface density
+rhos0: 350.0 # for fixed surface density
+srho_type: noise # if variable surface density, type of variability
+rho_bottom: 910 # density at bottom boundary condition
+NewSpin: true # rerun the spin up each time if true
+
+## regridding
+doublegrid: true
+nodestocombine: 6 
+multnodestocombine: 12
