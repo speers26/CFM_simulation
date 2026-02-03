@@ -10,10 +10,13 @@ TOTAL_RUNS=0
 SUCCESSFUL_RUNS=0
 FAILED_RUNS=0
 
-# for logging
+# for logging individual runs
 TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
 LOG_DIR="/home/speersm/luna/CPOM/speersm/CFM_simulation/logs"
 mkdir -p "$LOG_DIR"
+
+# for summary logging
+exec > >(tee "$LOG_DIR/run_cfm_summary_${TIMESTAMP}.log") 2>&1
 
 # Function to run a single CFM simulation
 run_cfm_job() {
