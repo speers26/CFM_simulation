@@ -8,7 +8,7 @@ MAR_data_path: /home/speersm/luna/CPOM/briggsk/RCM_data/Data/MAR/AIS/27.5km # pa
 processed_data_path: /home/speersm/luna/CPOM/speersm/CFM_simulation/data # path to store processed forcing data
 
 # Period
-start_year: 1979
+start_year: 2008
 end_year: 2025
 
 # Borehole location

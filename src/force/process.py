@@ -111,17 +111,23 @@ class ProcessMAR:
         # find data at borehole location
         borehole_data = xr_data.isel(**{y_coord: y_idx, x_coord: x_idx})
 
-        # convert to dataframe
-        borehole_df = (
-            borehole_data.sel(SECTOR=config["sector"]).to_dataframe().reset_index()
+        # drop everything not in correct sector
+        borehole_data = borehole_data.sel(SECTOR=config["sector"])
+
+        # convert to dataframe, filtering for valid data variables only
+        mapping = config["MAR_to_CFM_column_map"]
+        vars_to_include = list(mapping.keys())
+
+        # drop any variables not in vars_to_include
+        borehole_data = borehole_data.drop_vars(
+            [var for var in borehole_data.data_vars if var not in vars_to_include]
         )
 
+        # convert to dataframe
+        borehole_df = borehole_data.to_dataframe().reset_index()
+
         # rename columms to match CFM input column names
-        mapping = config["MAR_to_CFM_column_map"]
         borehole_df.rename(columns=mapping, inplace=True)
         borehole_df.set_index("TIME", inplace=True)
-
-        # drop unneeded columns
-        borehole_df = borehole_df[list(mapping.values())]
 
         return borehole_df
