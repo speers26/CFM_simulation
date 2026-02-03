@@ -20,7 +20,7 @@ sector: 1.0 # only take data from this sector in MAR files (think is ice vs non-
 
 ## Mapping converting MAR columns to CFM input columns
 MAR_to_CFM_column_map:
-  TTZ: T2m # 2m above surface termperature
+  TTZ: T2m # 2m above surface temperature
   TI1: TSKIN # surface temperature
   SU: SUBLIM # sublimation
   SHF: QH # sensible heat flux
