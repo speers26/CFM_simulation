@@ -24,14 +24,15 @@ with open("config.yaml", "r") as file:
     config = yaml.safe_load(file)
 
 if __name__ == "__main__":
-
-    parser = argparse.ArgumentParser(description="Run CFM simulation with optional command line arguments")
+    parser = argparse.ArgumentParser(
+        description="Run CFM simulation with optional command line arguments"
+    )
     parser.add_argument("--lat", type=float, help="Borehole latitude")
     parser.add_argument("--lon", type=float, help="Borehole longitude")
     parser.add_argument("--physrho", type=str, help="Physical densification scheme")
-    
+
     args = parser.parse_args()
-    
+
     if args.lat is not None and args.lon is not None and args.physrho is not None:
         config["borehole_lat"] = args.lat
         config["borehole_lon"] = args.lon
