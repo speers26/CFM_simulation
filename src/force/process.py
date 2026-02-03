@@ -14,17 +14,12 @@ logging.basicConfig(level=logging.INFO)
 
 
 class ProcessMAR:
-    def __init__(self, borehole_lat: float, borehole_lon: float) -> None:
-        """Initialize with daily MAR dataset and borehole coordinates. Reads in .nc files from MAR data path specified in config.
+    def __init__(self) -> None:
+        """Initialize with daily MAR dataset and borehole coordinates. Reads in .nc files from MAR data path specified in config."""
 
-        Args:
-            borehole_lat (float): Latitude of the borehole.
-            borehole_lon (float): Longitude of the borehole.
-        """
-
-        self.borehole_lat: float = borehole_lat
-        self.borehole_lon: float = borehole_lon
-        self._save_path: str = f"{config['processed_data_path']}/MAR_{self.borehole_lat}_{self.borehole_lon}_{config['start_year']}_{config['end_year']}.csv"
+        self._borehole_lat: float = config["borehole_lat"]
+        self._borehole_lon: float = config["borehole_lon"]
+        self._save_path: str = f"{config['CFM_data_path']}/cfm_input/MAR_{self._borehole_lat}_{self._borehole_lon}_{config['start_year']}_{config['end_year']}.csv"
 
         self._daily_xr: List[xr.Dataset] = None
         self._x_idx: int = None
@@ -39,20 +34,26 @@ class ProcessMAR:
             xr.Dataset: MAR data at the borehole location.
         """
 
-        logging.info("Reading MAR data...")
-        self._daily_xr = self._read_data()
-        logging.info("...MAR data read successfully.")
+        if os.path.exists(self._save_path):
+            logging.info(
+                f"Processed MAR data already exists at {self._save_path}. Skipping processing."
+            )
 
-        logging.info("Processing borehole data...")
-        borehole_dataframes = [
-            self._xr_to_input_dataframe(xr_data) for xr_data in self._daily_xr
-        ]
-        self._input_dataframe = pd.concat(borehole_dataframes)
-        logging.info("...borehole data processed successfully.")
+        else:
+            logging.info("Reading MAR data...")
+            self._daily_xr = self._read_data()
+            logging.info("...MAR data read successfully.")
 
-        os.makedirs(os.path.dirname(self._save_path), exist_ok=True)
-        self._input_dataframe.to_csv(self._save_path)
-        logging.info(f"Borehole MAR data saved to {self._save_path}")
+            logging.info("Processing borehole data...")
+            borehole_dataframes = [
+                self._xr_to_input_dataframe(xr_data) for xr_data in self._daily_xr
+            ]
+            self._input_dataframe = pd.concat(borehole_dataframes)
+            logging.info("...borehole data processed successfully.")
+
+            os.makedirs(os.path.dirname(self._save_path), exist_ok=True)
+            self._input_dataframe.to_csv(self._save_path)
+            logging.info(f"Borehole MAR data saved to {self._save_path}")
 
     def _read_data(self) -> List[xr.Dataset]:
         """
@@ -83,8 +84,8 @@ class ProcessMAR:
         logging.info(f"Processing XR data at year {xr_data['TIME'].dt.year.values[0]}")
 
         # get indices of closest grid point to borehole
-        lat_diff = np.abs(xr_data["LAT"] - self.borehole_lat)
-        lon_diff = np.abs(xr_data["LON"] - self.borehole_lon)
+        lat_diff = np.abs(xr_data["LAT"] - self._borehole_lat)
+        lon_diff = np.abs(xr_data["LON"] - self._borehole_lon)
         distance = np.sqrt(lat_diff**2 + lon_diff**2)
         y_idx, x_idx = np.unravel_index(distance.argmin(), distance.shape)
 
@@ -126,7 +127,10 @@ class ProcessMAR:
         # convert to dataframe
         borehole_df = borehole_data.to_dataframe().reset_index()
 
-        # rename columms to match CFM input column names
+        # drop everything apart from outlay 0.0 (surface layer)
+        borehole_df = borehole_df[borehole_df["OUTLAY"] == 0.0]
+
+        # rename columns to match CFM input column names
         borehole_df.rename(columns=mapping, inplace=True)
         borehole_df.set_index("TIME", inplace=True)
 
@@ -135,5 +139,9 @@ class ProcessMAR:
 
         # convert temperature to Kelvin
         borehole_df["TSKIN"] = borehole_df["TSKIN"] + 273.15
+        borehole_df["T2m"] = borehole_df["T2m"] + 273.15
+
+        # remove duplicate times
+        borehole_df = borehole_df[~borehole_df.index.duplicated(keep="first")]
 
         return borehole_df
