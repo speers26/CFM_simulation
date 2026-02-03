@@ -91,7 +91,7 @@ class CFMRun:
         )  # ADDED THIS FOR MERRA2 TO GET THE SIGN CORRECT.
         climateTS["forcing_data_start"] = config["start_year"]
 
-        # unsure why these are redifined here, but keeping consistent with previous code
+        # unsure why these are redefined here, but keeping consistent with previous code
         self._cfm_config["stpsPerYear"] = float("%.2f" % (StpsPerYr))
         self._cfm_config["stpsPerYearSpin"] = float("%.2f" % (StpsPerYr))
         self._cfm_config["grid1bottom"] = float("%.1f" % (depth_S1))
