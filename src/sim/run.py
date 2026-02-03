@@ -45,11 +45,31 @@ class CFMRun:
         self._cfm_config["borehole_lon"] = borehole_lon
         self._force_data: pd.DataFrame = None
 
+        # flag to indicate if output folder exists
+        self._output_exists: bool = False
+
+        # set output folder in config
+        self._cfm_config["resultsFolder"] = (
+            f"{self._cfm_output_path}/CFMoutput_{self._cfm_config['borehole_lat']}_{self._cfm_config['borehole_lon']}_{self._cfm_config['physRho']}"
+        )
+
+        if not os.path.exists(self._cfm_config["resultsFolder"]):
+            os.makedirs(self._cfm_config["resultsFolder"])
+            logging.info(
+                f"CFM output will be saved to {self._cfm_config['resultsFolder']}."
+            )
+        else:
+            logging.info(
+                f"CFM output path exists at {self._cfm_config['resultsFolder']}. Delete this folder to rerun simulation."
+            )
+            self._output_exists = True
+
     def run(self) -> None:
         """Run the CFM model with the specified configuration and forcing data."""
 
-        self._read_force_data()
-        self._run_cfm()
+        if not self._output_exists:
+            self._read_force_data()
+            self._run_cfm()
 
     def _read_force_data(self) -> None:
         """
@@ -70,15 +90,6 @@ class CFMRun:
         """Run the CFM model using the forcing data and configuration.
         This code is mostly copied from main.py in the CFM repository.
         """
-
-        # set output folder in config
-        self._cfm_config["resultsFolder"] = (
-            f"{self._cfm_output_path}/CFMoutput_{self._cfm_config['borehole_lat']}_{self._cfm_config['borehole_lon']}_{self._cfm_config['physRho']}"
-        )
-        os.makedirs(self._cfm_config["resultsFolder"], exist_ok=True)
-        logging.info(
-            f"CFM output will be saved to {self._cfm_config['resultsFolder']}."
-        )
 
         # format the CFM forcing data (including creating the spin up)
         # climateTS is a dictionary with the various climate fields needed, in the correct units.
