@@ -68,7 +68,7 @@ class ProcessMAR:
             for year in range(config["start_year"], config["end_year"] + 1)
         ]
 
-        datasets = [xr.open_dataset(file) for file in year_files]
+        datasets = [xr.open_dataset(file, engine="h5netcdf") for file in year_files]
 
         return datasets
 
