@@ -13,8 +13,8 @@ with open("config.yaml", "r") as file:
 logging.basicConfig(level=logging.INFO)
 
 sys.path.append(config["CFM_repo_path"])
-from RCMpkl_to_spin import makeSpinFiles  # noqa: F401 E402 # type: ignore
-from firn_density_nospin import FirnDensityNoSpin  # noqa: F401 E402 # type: ignore
+from RCMpkl_to_spin import makeSpinFiles  # noqa: E402 # type: ignore
+from firn_density_nospin import FirnDensityNoSpin  # noqa: E402 # type: ignore
 
 
 class CFMRun:
