@@ -136,4 +136,7 @@ class ProcessMAR:
         # convert temperature to Kelvin
         borehole_df["TSKIN"] = borehole_df["TSKIN"] + 273.15
 
+        # remove duplicate times
+        borehole_df = borehole_df[~borehole_df.index.duplicated(keep="first")]
+
         return borehole_df
