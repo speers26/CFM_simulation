@@ -16,7 +16,7 @@ logging.basicConfig(level=logging.INFO)
 class ProcessMAR:
     def __init__(self, borehole_lat: float, borehole_lon: float) -> None:
         """Initialize with daily MAR dataset at specified borehole coordinates. Reads in .nc files from MAR data path specified in config.
-        
+
         Args:
             borehole_lat (float): Latitude of borehole location.
             borehole_lon (float): Longitude of borehole location.
