@@ -41,6 +41,9 @@ if __name__ == "__main__":
             f"Using command line arguments: lat={borehole_lat}, lon={borehole_lon}, physrho={physRho}"
         )
     else:
+        borehole_lat = config["borehole_lat"]
+        borehole_lon = config["borehole_lon"]
+        physRho = config["cfm_config"]["physRho"]
         logging.info("Using borehole location and physrho from config.yaml")
 
     ProcessMAR(borehole_lat, borehole_lon).process()
