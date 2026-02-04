@@ -37,13 +37,15 @@ class CFMRun:
 
         # load cfm config
         self._cfm_config: dict = config["cfm_config"]
-        self._json_config_name = f"CFMconfig_{borehole_lat}_{borehole_lon}_{self._cfm_config['physRho']}.json"
 
         # set physRho and borehole loc from argument in case we've used command line to override config
         self._cfm_config["physRho"] = physRho
         self._cfm_config["borehole_lat"] = borehole_lat
         self._cfm_config["borehole_lon"] = borehole_lon
         self._force_data: pd.DataFrame = None
+
+        # set json config name
+        self._json_config_name = f"CFMconfig_{borehole_lat}_{borehole_lon}_{self._cfm_config['physRho']}.json"
 
         # flag to indicate if output folder exists
         self._output_exists: bool = False
