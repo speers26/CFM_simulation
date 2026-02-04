@@ -12,7 +12,6 @@ with open("config.yaml", "r") as file:
     config = yaml.safe_load(file)
 
 if __name__ == "__main__":
-
     parser = argparse.ArgumentParser(
         description="Run CFM plotting with optional command line arguments"
     )
@@ -45,7 +44,9 @@ if __name__ == "__main__":
     os.makedirs(figure_path, exist_ok=True)
     results_dict = {}
 
-    with xr.open_dataset(f"{output_path}/CFMresults.hdf5", engine="h5netcdf", phony_dims="sort") as ds:
+    with xr.open_dataset(
+        f"{output_path}/CFMresults.hdf5", engine="h5netcdf", phony_dims="sort"
+    ) as ds:
         results_dict["model_time_matrix"] = ds["density"][
             1:, 0
         ]  # the first column of the density data is the model time step for matrix outputs ('rho','Tz','LWC','age'), which will be different than others if "truncate_outputs" is true.
@@ -80,23 +81,23 @@ if __name__ == "__main__":
 
     # plot DIP with time
     plt.figure(figsize=(10, 6))
-    plt.plot(results_dict['model_time_vector'].values, results_dict['DIP'][:, 0])
+    plt.plot(results_dict["model_time_vector"].values, results_dict["DIP"][:, 0])
     plt.xlabel("Model Time (years)")
     plt.ylabel("DIP (m)")
     plt.grid()
     plt.savefig(f"{figure_path}/DIP_time_{lat}_{lon}_{phys_rho}.png")
 
     # plot change in firn thickness over time
-    dz = results_dict['depth'][:-1]-results_dict['depth'][1:]
+    dz = results_dict["depth"][:-1] - results_dict["depth"][1:]
     dz = np.mean(dz)
 
     close_off_dens = 830.0
-    firn_mask = results_dict['density'] <= close_off_dens
+    firn_mask = results_dict["density"] <= close_off_dens
     firn_thickness = np.sum(firn_mask * dz, axis=1)
     firn_delta = firn_thickness[1:] - firn_thickness[:-1]
 
     plt.figure(figsize=(10, 6))
-    plt.plot(results_dict['model_time_vector'].values[1:], firn_delta)
+    plt.plot(results_dict["model_time_vector"].values[1:], firn_delta)
     plt.xlabel("Model Time (years)")
     plt.ylabel("Change in Firn Thickness (m)")
     plt.grid()
