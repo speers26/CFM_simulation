@@ -9,24 +9,22 @@ PHYSRHO_VALUES=("HLdynamic" "GSFC2020" "Crocus")
 run_cfm_plot() {
     local lat=$1
     local lon=$2
-    local physrho=$3
+    shift 2
+    local physrho_values=("$@")
 
     if python /home/speersm/luna/CPOM/speersm/CFM_simulation/scripts/plot_cfm.py \
         --lat "$lat" \
         --lon "$lon" \
-        --physrho "$physrho"; then
-        echo "SUCCESS: lat=$lat, lon=$lon, physrho=$physrho"
+        --physrhols "${physrho_values[@]}"; then
+        echo "SUCCESS: lat=$lat, lon=$lon, physrho=${physrho_values[*]}"
     else
-        echo "FAILED: lat=$lat, lon=$lon, physrho=$physrho"
+        echo "FAILED: lat=$lat, lon=$lon, physrho=${physrho_values[*]}"
     fi
 }
 
-# loop over all latitude/longitude pairs and physrho values
+# loop over all latitude/longitude pairs, using all physrho values for each location
 for i in "${!LATITUDES[@]}"; do
     LAT=${LATITUDES[$i]}
     LON=${LONGITUDES[$i]}
-    for PHYSRHO in "${PHYSRHO_VALUES[@]}"; do
-        ((TOTAL_RUNS++))
-        run_cfm_plot "$LAT" "$LON" "$PHYSRHO" || true
-    done
+    run_cfm_plot "$LAT" "$LON" "${PHYSRHO_VALUES[@]}"
 done
