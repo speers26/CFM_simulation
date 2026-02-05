@@ -12,8 +12,9 @@ logging.basicConfig(level=logging.INFO)
 with open("config.yaml", "r") as file:
     config = yaml.safe_load(file)
 
+
 class ResultsPlotter:
-    def __init__ (self, lat: float, lon: float, phys_rho: List[str]) -> None:
+    def __init__(self, lat: float, lon: float, phys_rho: List[str]) -> None:
         """Initialize the OutputPlotter with borehole location and physical densification schemes.
         Args:
             lat (float): Borehole latitude
@@ -40,7 +41,9 @@ class ResultsPlotter:
         This function will call the internal functions to load the data and create the plots, and can be called from an external script or notebook to generate the figures.
         """
 
-        logging.info(f"Plotting results for lat={self.lat}, lon={self.lon}, phys_rho={self.phys_rho}")
+        logging.info(
+            f"Plotting results for lat={self.lat}, lon={self.lon}, phys_rho={self.phys_rho}"
+        )
         logging.info(f"Figures will be saved to: {self._figure_path}")
 
         logging.info("Loading data...")
@@ -52,11 +55,13 @@ class ResultsPlotter:
         logging.info("Density profiles plotted, now plotting DIP time series...")
         self._plot_DIP_time_series()
 
-        logging.info("DIP time series plotted, now plotting change in firn thickness...")
+        logging.info(
+            "DIP time series plotted, now plotting change in firn thickness..."
+        )
         self._plot_firn_thickness_change()
 
     def _load_data(self) -> None:
-        """ Load the CFM output data from the specified output paths and store it in a dictionary for plotting.
+        """Load the CFM output data from the specified output paths and store it in a dictionary for plotting.
         The data is stored in a dictionary where the keys are the output paths and the values are dictionaries containing the model time, depth, density, and temperature data as xarray DataArrays.
         """
 
@@ -74,8 +79,7 @@ class ResultsPlotter:
                 }
 
     def _plot_density_profiles(self) -> None:
-        """Plot the density profiles for each physical densification scheme and save the figures to the specified figure paths.
-        """
+        """Plot the density profiles for each physical densification scheme and save the figures to the specified figure paths."""
 
         for phys_rho, results_dict in self._results_dicts.items():
             # Create a plot of density vs depth using matplotlib
@@ -98,12 +102,15 @@ class ResultsPlotter:
             plt.close()
 
     def _plot_DIP_time_series(self) -> None:
-        """Plot the DIP time series for each physical densification scheme, all on the same plot, and save the figure to the specified figure path.
-        """
+        """Plot the DIP time series for each physical densification scheme, all on the same plot, and save the figure to the specified figure path."""
 
         plt.figure(figsize=(10, 6))
         for phys_rho, results_dict in self._results_dicts.items():
-            plt.plot(results_dict["model_time_vector"].values, results_dict["DIP"][:, 0], label=f"{phys_rho}")
+            plt.plot(
+                results_dict["model_time_vector"].values,
+                results_dict["DIP"][:, 0],
+                label=f"{phys_rho}",
+            )
         plt.xlabel("Model Time (years)")
         plt.ylabel("DIP (m)")
         plt.title("DIP Time Series")
@@ -124,7 +131,11 @@ class ResultsPlotter:
             firn_mask = results_dict["density"] <= config["cfm_config"]["RhoImp"]
             firn_thickness = np.sum(firn_mask * dz, axis=1)
             firn_delta = firn_thickness[1:] - firn_thickness[:-1]
-            plt.plot(results_dict["model_time_vector"].values[1:], firn_delta, label=f"{phys_rho}")
+            plt.plot(
+                results_dict["model_time_vector"].values[1:],
+                firn_delta,
+                label=f"{phys_rho}",
+            )
 
         plt.xlabel("Model Time (years)")
         plt.ylabel("Change in Firn Thickness (m)")

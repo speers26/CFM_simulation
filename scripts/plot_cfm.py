@@ -1,4 +1,4 @@
-""" Script to plot the results of the CFM simulations for different physical densification schemes. The script loads the CFM output data, creates plots for density profiles, DIP time series, and change in firn thickness over time, and saves the figures to the specified figure paths. The script can be run with command line arguments for borehole latitude, longitude, and physical densification schemes, or it can use the values specified in the config.yaml file if no command line arguments are provided.
+"""Script to plot the results of the CFM simulations for different physical densification schemes. The script loads the CFM output data, creates plots for density profiles, DIP time series, and change in firn thickness over time, and saves the figures to the specified figure paths. The script can be run with command line arguments for borehole latitude, longitude, and physical densification schemes, or it can use the values specified in the config.yaml file if no command line arguments are provided.
 
 Usage:
     python plot_cfm.py --lat 66.403 --lon 63.376 --physrhols GSFC2020 Crocus
