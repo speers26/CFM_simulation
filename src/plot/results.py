@@ -28,10 +28,10 @@ class ResultsPlotter:
 
         phys_rho_str = "_".join(self.phys_rho)
         self._output_paths: List[str] = [
-            f"{config['CFM_data_path']}/cfm_output/CFMoutput_{self.lat}_{self.lon}_{scheme}"
+            f"{config['CFM_data_path']}/cfm_output/CFMoutput_{self.lat}_{self.lon}_{config['start_year']}_{config['end_year']}_{scheme}"
             for scheme in self.phys_rho
         ]
-        self._figure_path: str = f"{config['CFM_data_path']}/cfm_figures/figures_{self.lat}_{self.lon}_{phys_rho_str}"
+        self._figure_path: str = f"{config['CFM_data_path']}/cfm_figures/figures_{self.lat}_{self.lon}_{config['start_year']}_{config['end_year']}_{phys_rho_str}"
         os.makedirs(self._figure_path, exist_ok=True)
 
         self._results_dicts: Dict[str, Dict[str, xr.DataArray]] = {}
