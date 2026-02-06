@@ -15,7 +15,7 @@ with open("config.yaml", "r") as file:
 
 class ResultsPlotter:
     def __init__(self, lat: float, lon: float, phys_rho: List[str]) -> None:
-        """Initialize the OutputPlotter with borehole location and physical densification schemes.
+        """Initialize the ResultsPlotter with borehole location and physical densification schemes.
         Args:
             lat (float): Borehole latitude
             lon (float): Borehole longitude
