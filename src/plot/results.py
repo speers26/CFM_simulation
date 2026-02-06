@@ -130,9 +130,11 @@ class ResultsPlotter:
             dz = np.mean(dz)
             firn_mask = results_dict["density"] <= config["cfm_config"]["RhoImp"]
             firn_thickness = np.sum(firn_mask * dz, axis=1)
+            # firn_delta[i] represents the change from time t_i to t_{i+1}, so we
+            # associate it with the starting time t_i (model_time_vector[:-1]).
             firn_delta = firn_thickness[1:] - firn_thickness[:-1]
             plt.plot(
-                results_dict["model_time_vector"].values[1:],
+                results_dict["model_time_vector"].values[:-1],
                 firn_delta,
                 label=f"{phys_rho}",
             )
