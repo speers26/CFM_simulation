@@ -1,7 +1,19 @@
 #!/bin/bash
 
+# Create log file with timestamp
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LOG_DIR="${SCRIPT_DIR}/../logs"
+mkdir -p "$LOG_DIR"
+LOG_FILE="${LOG_DIR}/plot_cfm_$(date +%Y%m%d_%H%M%S).log"
+
+# Redirect all output to log file and terminal
+exec > >(tee -a "$LOG_FILE") 2>&1
+
+echo "=== CFM Plot Script Started at $(date) ==="
+echo "Log file: $LOG_FILE"
+
 # Define arrays of latitude/longitude pairs (same index = same location)
-LATITUDES=(-66.403 -66.588 -67.000 -67.444 -67.500)
+LATITUDES=(-66.403 -66.588 -67.000 -67.444 -67.500)         
 LONGITUDES=(-63.376 -63.212 -61.486 -64.953 -63.336)
 PHYSRHO_VALUES=("HLdynamic" "GSFC2020" "Crocus")
 
@@ -28,3 +40,5 @@ for i in "${!LATITUDES[@]}"; do
     LON=${LONGITUDES[$i]}
     run_cfm_plot "$LAT" "$LON" "${PHYSRHO_VALUES[@]}"
 done
+
+echo "=== CFM Plot Script Completed at $(date) ==="
