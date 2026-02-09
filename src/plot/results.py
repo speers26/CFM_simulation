@@ -33,7 +33,9 @@ class ResultsPlotter:
         self._figure_path: str = f"{config['CFM_data_path']}/cfm_figures/figures_{self.lat}_{self.lon}_{config['start_year']}_{config['end_year']}_{phys_rho_str}"
         os.makedirs(self._figure_path, exist_ok=True)
 
-        self._thickness_change_range: List[float] = config["thickness_change_range"] # Range of model time to plot for change in firn thickness (in years)
+        self._thickness_change_range: List[float] = config[
+            "thickness_change_range"
+        ]  # Range of model time to plot for change in firn thickness (in years)
         self._results_dicts: Dict[str, Dict[str, xr.DataArray]] = {}
 
     def plot(self) -> None:
@@ -139,7 +141,9 @@ class ResultsPlotter:
                 label=f"{phys_rho}",
             )
 
-        plt.xlim(self._thickness_change_range)  # Set x-axis limits to the specified range
+        plt.xlim(
+            self._thickness_change_range
+        )  # Set x-axis limits to the specified range
         plt.xlabel("Model Time (years)")
         plt.ylabel("Change in Firn Thickness (m)")
         plt.title("Change in Firn Thickness over Time")
