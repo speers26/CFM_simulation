@@ -154,3 +154,6 @@ cfm_config:
   s_zero_rho: 200
   SEB: true
   RAIN: true
+
+### ----------------- Plotting ----------------- ###
+thickness_change_range: [2000, 2000.25] # Range of model time to plot for change in firn thickness (in years)

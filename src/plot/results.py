@@ -25,7 +25,6 @@ class ResultsPlotter:
         self.lat: float = lat
         self.lon: float = lon
         self.phys_rho: List[str] = phys_rho
-
         phys_rho_str = "_".join(self.phys_rho)
         self._output_paths: List[str] = [
             f"{config['CFM_data_path']}/cfm_output/CFMoutput_{self.lat}_{self.lon}_{config['start_year']}_{config['end_year']}_{scheme}"
@@ -34,6 +33,7 @@ class ResultsPlotter:
         self._figure_path: str = f"{config['CFM_data_path']}/cfm_figures/figures_{self.lat}_{self.lon}_{config['start_year']}_{config['end_year']}_{phys_rho_str}"
         os.makedirs(self._figure_path, exist_ok=True)
 
+        self._thickness_change_range: List[float] = config["thickness_change_range"] # Range of model time to plot for change in firn thickness (in years)
         self._results_dicts: Dict[str, Dict[str, xr.DataArray]] = {}
 
     def plot(self) -> None:
@@ -49,16 +49,16 @@ class ResultsPlotter:
         logging.info("Loading data...")
         self._load_data()
 
-        logging.info("Data loaded, now plotting density profiles...")
-        self._plot_density_profiles()
-
-        logging.info("Density profiles plotted, now plotting DIP time series...")
+        logging.info("Data loaded, now plotting DIP time series...")
         self._plot_DIP_time_series()
 
         logging.info(
             "DIP time series plotted, now plotting change in firn thickness..."
         )
         self._plot_firn_thickness_change()
+
+        logging.info("DIP time series plotted, now plotting density profiles...")
+        self._plot_density_profiles()
 
     def _load_data(self) -> None:
         """Load the CFM output data from the specified output paths and store it in a dictionary for plotting.
@@ -139,6 +139,7 @@ class ResultsPlotter:
                 label=f"{phys_rho}",
             )
 
+        plt.xlim(self._thickness_change_range)  # Set x-axis limits to the specified range
         plt.xlabel("Model Time (years)")
         plt.ylabel("Change in Firn Thickness (m)")
         plt.title("Change in Firn Thickness over Time")
