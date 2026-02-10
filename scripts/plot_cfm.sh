@@ -15,7 +15,7 @@ echo "Log file: $LOG_FILE"
 # Define arrays of latitude/longitude pairs (same index = same location)
 LATITUDES=(-66.403 -66.588 -67.000 -67.444 -67.500)         
 LONGITUDES=(-63.376 -63.212 -61.486 -64.953 -63.336)
-PHYSRHO_VALUES=("HLdynamic" "GSFC2020" "Crocus")
+PHYSRHO_VALUES=("HLdynamic" "GSFC2020" "Crocus" "Barnola1991" "Ligtenberg2011")
 
 # Function to run a single CFM plotting script
 run_cfm_plot() {
