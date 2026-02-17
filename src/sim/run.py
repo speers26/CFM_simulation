@@ -101,11 +101,12 @@ class CFMRun:
                 timeres=self._cfm_config["DFresample"],
                 Tinterp="mean",
                 spin_date_st=config["start_year"],
-                spin_date_end=config["sde"],
+                spin_date_end=config["spin_end_year"],
                 melt=self._cfm_config["MELT"],
                 desired_depth=None,
                 SEB=self._cfm_config["SEB"],
                 rho_bottom=config["rho_bottom"],
+                num_reps=config["num_reps"],
             )
         )
         climateTS["SUBLIM"] = (
