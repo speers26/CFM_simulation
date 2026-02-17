@@ -27,11 +27,11 @@ class ProcessMAR:
         self._save_path: str = f"{config['CFM_data_path']}/cfm_input/MAR_{self._borehole_lat}_{self._borehole_lon}_{config['start_year']}_{config['end_year']}.csv"
 
         self._daily_xr: List[xr.Dataset] = None
-        self._x_idx: int = None
-        self._y_idx: int = None
+        self._x_idx: int = 0
+        self._y_idx: int = 0
         self._borehole_data: xr.Dataset = None
 
-    def process(self) -> xr.Dataset:
+    def process(self) -> None:
         """
         Process the MAR dataset to extract data at the borehole location.
 
