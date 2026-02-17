@@ -76,7 +76,8 @@ if __name__ == "__main__":
 
             # only keep model data from depths where we have in situ data
             depth_mask = (results_dict["depth"] >= in_situ_depth.min()) & (
-                results_dict["depth"] <= in_situ_depth.max())
+                results_dict["depth"] <= in_situ_depth.max()
+            )
 
             # interpolate in model data to in situ depth grid
             density_summer_interp = np.empty(
@@ -84,7 +85,9 @@ if __name__ == "__main__":
             )
             for i in range(density_summer.shape[0]):
                 density_summer_interp[i, :] = np.interp(
-                    in_situ_depth, results_dict["depth"].values[depth_mask], density_summer[i, depth_mask]
+                    in_situ_depth,
+                    results_dict["depth"].values[depth_mask],
+                    density_summer[i, depth_mask],
                 )
 
             # get mean model density at each depth across all model time steps in astrochronological summers
@@ -93,7 +96,12 @@ if __name__ == "__main__":
             density_summer_upper = np.percentile(density_summer_interp, 75, axis=0)
 
             # plot rmse vs depth
-            plt.plot(density_summer_mean - in_situ_density, in_situ_depth, label=f"{physrho}", linestyle="--")
+            plt.plot(
+                density_summer_mean - in_situ_density,
+                in_situ_depth,
+                label=f"{physrho}",
+                linestyle="--",
+            )
             plt.fill_betweenx(
                 in_situ_depth,
                 density_summer_lower - in_situ_density,
