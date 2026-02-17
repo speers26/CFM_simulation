@@ -37,7 +37,18 @@ if __name__ == "__main__":
     ]  # astrochronological summer of 2015 (December 2015 - February 2016)
 
     for site, (lat, lon) in borehole_sites.items():
+        # load in in situ density data for this site
+        in_situ_path = (
+            f"/home/speersm/luna/CPOM/speersm/in_situ/{site}_depth-density.csv"
+        )
+        in_situ_data = pd.read_csv(in_situ_path)
+        in_situ_data = in_situ_data.iloc[1:]
+
+        # put in situ data on same depth grid as model output
+        in_situ_depth = pd.to_numeric(in_situ_data["Depth"].values)
+        in_situ_density = pd.to_numeric(in_situ_data["Density"].values)
         plt.figure(figsize=(6, 8))
+        # plt.plot(in_situ_density, in_situ_depth, label="In situ", color="k", linewidth=1)
         for physrho in physrho_values:
             # load simulation
             output_path = f"{config['CFM_data_path']}/cfm_output/CFMoutput_{lat}_{lon}_{start}_{end}_{physrho}/CFMresults.hdf5"
@@ -63,16 +74,9 @@ if __name__ == "__main__":
             # only keep density data from astrochronological summers
             density_summer = results_dict["density"][summer_mask, :]
 
-            # load in in situ density data for this site
-            in_situ_path = (
-                f"/home/speersm/luna/CPOM/speersm/in_situ/{site}_depth-density.csv"
-            )
-            in_situ_data = pd.read_csv(in_situ_path)
-            in_situ_data = in_situ_data.iloc[1:]
-
-            # put in situ data on same depth grid as model output
-            in_situ_depth = pd.to_numeric(in_situ_data["Depth"].values)
-            in_situ_density = pd.to_numeric(in_situ_data["Density"].values)
+            # only keep model data from depths where we have in situ data
+            depth_mask = (results_dict["depth"] >= in_situ_depth.min()) & (
+                results_dict["depth"] <= in_situ_depth.max())
 
             # interpolate in model data to in situ depth grid
             density_summer_interp = np.empty(
@@ -80,26 +84,32 @@ if __name__ == "__main__":
             )
             for i in range(density_summer.shape[0]):
                 density_summer_interp[i, :] = np.interp(
-                    in_situ_depth, results_dict["depth"].values, density_summer[i, :]
+                    in_situ_depth, results_dict["depth"].values[depth_mask], density_summer[i, depth_mask]
                 )
 
-            # get rmse at each depth, averaging over time steps
-            rmse = np.sqrt(
-                np.mean((density_summer_interp - in_situ_density) ** 2, axis=0)
-            )
-
-            # get rmse as percentage of in situ density
-            rmse_percent = rmse / in_situ_density * 100
+            # get mean model density at each depth across all model time steps in astrochronological summers
+            density_summer_mean = np.mean(density_summer_interp, axis=0)
+            density_summer_lower = np.percentile(density_summer_interp, 25, axis=0)
+            density_summer_upper = np.percentile(density_summer_interp, 75, axis=0)
 
             # plot rmse vs depth
-            plt.plot(rmse_percent, in_situ_depth, label=f"{physrho}")
+            plt.plot(density_summer_mean - in_situ_density, in_situ_depth, label=f"{physrho}", linestyle="--")
+            plt.fill_betweenx(
+                in_situ_depth,
+                density_summer_lower - in_situ_density,
+                density_summer_upper - in_situ_density,
+                alpha=0.3,
+                color=plt.gca().lines[-1].get_color(),
+            )
+        # also plot in situ density profile for reference
+        # add vertical line at 0 to indicate perfect agreement between model and in situ
+        plt.axvline(0, color="k", linestyle=":")
         plt.gca().invert_yaxis()
-        plt.xlabel("RMSE (% of in situ density)")
+        plt.xlabel("Density (kg/m³)")
         plt.ylabel("Depth (m)")
-        plt.title(f"Density RMSE vs Depth for {site}")
+        plt.title(f"Density vs Depth (model difference) for {site}")
         plt.legend()
         plt.grid()
-        plt.xlim(0, 45)
         plt.savefig(
-            f"/home/speersm/luna/CPOM/speersm/CFM_data/cfm_figures/errors/{site}_density_rmse.png"
+            f"/home/speersm/luna/CPOM/speersm/CFM_data/cfm_figures/errors/{site}_diff.png"
         )
