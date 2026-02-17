@@ -36,7 +36,6 @@ MAR_to_CFM_column_map:
 
 ## model run parameters
 spin_end_year: 1989 #spin date end
-num_reps: 7 #number of repetitions of the same spinup to do, in case we need to do extra to fully refresh the firn column
 runid: -9999 
 rho_bottom: 910 # density at bottom boundary condition
 sublim_sf: -1 #sublimation scaling factor, -1 for MERRA2 data, not sure for MAR data but think also -1
