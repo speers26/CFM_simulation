@@ -1,4 +1,4 @@
-""" 
+"""
 Working script for plotting simulated density profiles against in situ density profiles
 could be integrated into src/plot/results.py if we decide to keep these plots
 
