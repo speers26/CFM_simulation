@@ -32,6 +32,22 @@ MAR_to_CFM_column_map:
   AL2: ALBEDO # surface albedo
   ME: SMELT # melt
 
+## Mapping converting RACMO columns to CFM input columns
+## Some columns are not 1-1, and should be calculated from the RACMO data
+## e.g., rainfall can be calculated from total precipitation and snowfall
+RACMO_to_CFM_column_map:
+  tas: T2m # 2m above surface temperature
+  ts: TSKIN # surface temperature
+  sublgl: SUBLIM # sublimation
+  hlfssl: QH # sensible heat flux
+  hflsgl: QL # latent heat flux
+  rsds: SW_d # downward shortwave radiation
+  rlds: LW_d # downward longwave radiation
+  NONE: RAIN # rainfall
+  prsn: BDOT # snowfall
+  NONE: ALBEDO # surface albedo
+  mltgl: SMELT # melt
+
 ### ----------------- CFM Simulation ----------------- ###
 
 ## model run parameters
