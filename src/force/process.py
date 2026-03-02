@@ -194,6 +194,7 @@ class ProcessMAR(ProcessBase):
 
         return borehole_df
 
+
 class ProcessRACMO(ProcessBase):
     def __init__(self, borehole_lat: float, borehole_lon: float) -> None:
         """Initialize with daily RACMO dataset at specified borehole coordinates. Reads in .nc files from RACMO data path specified in config.
@@ -202,7 +203,7 @@ class ProcessRACMO(ProcessBase):
             borehole_lat (float): Latitude of borehole location.
             borehole_lon (float): Longitude of borehole location.
         """
-    
+
         self._RCM_name: str = "RACMO"
         self._save_path: str = config["force_data_save_path_pattern"].format(
             CFM_data_path=config["CFM_data_path"],
@@ -227,9 +228,7 @@ class ProcessRACMO(ProcessBase):
         super().process(self._save_path)
 
     def _read_data(self) -> List[xr.Dataset]:
-
         pass
 
     def _xr_to_input_dataframe(self, xr_data: xr.Dataset) -> pd.DataFrame:
-
         pass
