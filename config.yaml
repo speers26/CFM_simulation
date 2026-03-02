@@ -42,21 +42,21 @@ MAR_to_CFM_column_map:
 ## e.g., rainfall can be calculated from total precipitation and snowfall
 RACMO_to_CFM_column_map:
   tas: T2m # 2m above surface temperature
-  # ts: TSKIN # surface temperature
-  # sublgl: SUBLIM # sublimation
-  # hlfssl: QH # sensible heat flux
-  # hflsgl: QL # latent heat flux
-  # rsds: SW_d # downward shortwave radiation
-  # rlds: LW_d # downward longwave radiation
-  # NONE: RAIN # rainfall
-  # prsn: BDOT # snowfall
-  # NONE: ALBEDO # surface albedo
-  # mltgl: SMELT # melt
+  ts: TSKIN # surface temperature
+  sublgl: SUBLIM # sublimation
+  hlfssl: QH # sensible heat flux
+  hflsgl: QL # latent heat flux
+  rsds: SW_d # downward shortwave radiation
+  rlds: LW_d # downward longwave radiation
+  NONE: RAIN # rainfall
+  prsn: BDOT # snowfall
+  NONE: ALBEDO # surface albedo
+  mltgl: SMELT # melt
 
 ## additional RACMO variables to read in to calculate CFM inputs
 RACMO_additional_vars:
   - pr # total precipitation, used to calculate rainfall from pr - prsn
-  # - rsusgl # upward shortwave radiation, used to calculate albedo from rsugl / rsds
+  - rsusgl # upward shortwave radiation, used to calculate albedo from rsugl / rsds
 
 ### ----------------- CFM Simulation ----------------- ###
 

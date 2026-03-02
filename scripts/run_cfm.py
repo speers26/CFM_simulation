@@ -52,8 +52,8 @@ if __name__ == "__main__":
     else:
         borehole_lat = config["borehole_lat"]
         borehole_lon = config["borehole_lon"]
+        rcm_name = config["rcm_name"]
         physRho = config["cfm_config"]["physRho"]
-        rcm_name = config["cfm_config"]["rcm_name"]
         logging.info("Using borehole location and physrho from config.yaml")
 
     if rcm_name == "MAR":
@@ -65,4 +65,5 @@ if __name__ == "__main__":
             f"Invalid RCM name: {rcm_name}. Please choose either 'MAR' or 'RACMO'."
         )
         exit(1)
+
     CFMRun(borehole_lat, borehole_lon, physRho).run()

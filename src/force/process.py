@@ -62,7 +62,7 @@ class ProcessBase(ABC):
             logging.info(f"Borehole RCM data saved to {save_path}")
 
     @abstractmethod
-    def _read_data(self) -> None:
+    def _read_data(self) -> List[xr.Dataset]:
         """Abstract method to read in data, to be implemented by subclasses."""
         pass
 
@@ -236,15 +236,41 @@ class ProcessRACMO(ProcessBase):
 
         racmo_data_path = config["RACMO_data_path"]
         all_files = os.listdir(racmo_data_path)
-        year_files = []
-        for file in all_files:
-            if file.endswith(".nc"):
-                for year in range(config["start_year"], config["end_year"] + 1):
-                    if str(year) in file:
-                        if any(var in file for var in self._var_to_read):
-                            year_files.append(f"{racmo_data_path}/{file}")
-                            break
-        logging.info(f"RACMO files to read: {year_files}")
+        datasets = []
+
+        for year in range(config["start_year"], config["end_year"] + 1):
+            datasets.append(self._read_data_by_year_all_vars(year, all_files))
+
+        return datasets
+
+    def _read_data_by_year_all_vars(self, year: int, all_files: List[str]) -> xr.Dataset:
+        """
+        For a given year, read all RACMO files containing any of the variables we want to read, then merge these into a single
+        xarray Dataset for that year.
+
+        Args:
+            year (int): Year for which to read RACMO data.
+            all_files (List[str]): List of all files in the RACMO data directory.
+        
+        Returns:
+            xr.Dataset: Merged xarray Dataset containing all variables we want to read for the given year.
+        
+        """
+
+        year_files = [f"{config['RACMO_data_path']}/{file}" for file in all_files if str(year) in file]
+        if not year_files:
+            return None
+        else:
+            var_files = []
+            for var in self._var_to_read:
+                var_file = next((file for file in year_files if var in file), None)
+                if var_file is not None:
+                    var_files.append(var_file)
+            datasets = [xr.open_dataset(file, engine="h5netcdf") for file in var_files]
+            merged_dataset = xr.merge(datasets)
+
+        return merged_dataset
 
     def _xr_to_input_dataframe(self, xr_data: xr.Dataset) -> pd.DataFrame:
-        pass
+        
+        logging.info("Processing XR data.")
