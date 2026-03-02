@@ -50,6 +50,11 @@ RACMO_to_CFM_column_map:
   NONE: ALBEDO # surface albedo
   mltgl: SMELT # melt
 
+## additional RACMO variables to read in to calculate CFM inputs
+RACMO_additional_vars:
+  - pr # total precipitation, used to calculate rainfall from pr - prsn
+  - rsusgl # upward shortwave radiation, used to calculate albedo from rsugl / rsds
+
 ### ----------------- CFM Simulation ----------------- ###
 
 ## model run parameters

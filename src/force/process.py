@@ -80,6 +80,8 @@ class ProcessMAR(ProcessBase):
             borehole_lon (float): Longitude of borehole location.
         """
 
+        super().__init__(borehole_lat, borehole_lon)
+
         self._RCM_name: str = "MAR"
         self._save_path: str = config["force_data_save_path_pattern"].format(
             CFM_data_path=config["CFM_data_path"],
@@ -89,8 +91,6 @@ class ProcessMAR(ProcessBase):
             start_year=config["start_year"],
             end_year=config["end_year"],
         )
-
-        super().__init__(borehole_lat, borehole_lon)
 
     def process(self) -> None:
         """
@@ -204,6 +204,8 @@ class ProcessRACMO(ProcessBase):
             borehole_lon (float): Longitude of borehole location.
         """
 
+        super().__init__(borehole_lat, borehole_lon)
+
         self._RCM_name: str = "RACMO"
         self._save_path: str = config["force_data_save_path_pattern"].format(
             CFM_data_path=config["CFM_data_path"],
@@ -213,8 +215,8 @@ class ProcessRACMO(ProcessBase):
             start_year=config["start_year"],
             end_year=config["end_year"],
         )
-
-        super().__init__(borehole_lat, borehole_lon)
+        self._var_to_read = list(config["RACMO_to_CFM_column_map"].keys())
+        self._var_to_read += config["RACMO_additional_vars"]
 
     def process(self) -> None:
         """
