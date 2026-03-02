@@ -16,7 +16,8 @@ logging.basicConfig(level=logging.INFO)
 
 class ProcessBase(ABC):
     def __init__(self, borehole_lat: float, borehole_lon: float) -> None:
-        """Base class for processing data at specified borehole coordinates. Subclasses should implement the process method to read in and process data, and save to the specified location.
+        """Base class for processing data at specified borehole coordinates. Subclasses should implement the process method
+        to read in and process data to their relevant save directory.
 
         Args:
             borehole_lat (float): Latitude of borehole location.
@@ -100,7 +101,6 @@ class ProcessMAR(ProcessBase):
             xr.Dataset: MAR data at the borehole location.
         """
 
-        print(self._save_path)
         super().process(self._save_path)
 
     def _read_data(self) -> List[xr.Dataset]:
@@ -197,7 +197,8 @@ class ProcessMAR(ProcessBase):
 
 class ProcessRACMO(ProcessBase):
     def __init__(self, borehole_lat: float, borehole_lon: float) -> None:
-        """Initialize with daily RACMO dataset at specified borehole coordinates. Reads in .nc files from RACMO data path specified in config.
+        """Initialize with daily RACMO dataset at specified borehole coordinates. Reads in .nc files from RACMO data path
+        specified in config.
 
         Args:
             borehole_lat (float): Latitude of borehole location.
@@ -230,7 +231,21 @@ class ProcessRACMO(ProcessBase):
         super().process(self._save_path)
 
     def _read_data(self) -> List[xr.Dataset]:
-        pass
+        """ Read in the RACMO .nc files from the specified data path in config, filtering for files which contain the variables we
+        want to read and which contain a year between start and end year in config."""
+        
+        racmo_data_path = config["RACMO_data_path"]
+        all_files = os.listdir(racmo_data_path)
+        year_files = []
+        for file in all_files:
+            if file.endswith(".nc"):
+                for year in range(config["start_year"], config["end_year"] + 1):
+                    if str(year) in file:
+                        if any(var in file for var in self._var_to_read):
+                            year_files.append(f"{racmo_data_path}/{file}")
+                            break
+        logging.info(f"RACMO files to read: {year_files}")
+
 
     def _xr_to_input_dataframe(self, xr_data: xr.Dataset) -> pd.DataFrame:
         pass
