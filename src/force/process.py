@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 import xarray as xr
 import yaml
+from abc import ABC, abstractmethod
 
 with open("config.yaml", "r") as file:
     config = yaml.safe_load(file)
@@ -13,9 +14,9 @@ with open("config.yaml", "r") as file:
 logging.basicConfig(level=logging.INFO)
 
 
-class ProcessMAR:
+class ProcessBase(ABC):
     def __init__(self, borehole_lat: float, borehole_lon: float) -> None:
-        """Initialize with daily MAR dataset at specified borehole coordinates. Reads in .nc files from MAR data path specified in config.
+        """Base class for processing data at specified borehole coordinates. Subclasses should implement the process method to read in and process data, and save to the specified location.
 
         Args:
             borehole_lat (float): Latitude of borehole location.
@@ -24,12 +25,73 @@ class ProcessMAR:
 
         self._borehole_lat: float = borehole_lat
         self._borehole_lon: float = borehole_lon
-        self._save_path: str = f"{config['CFM_data_path']}/cfm_input/MAR_{self._borehole_lat}_{self._borehole_lon}_{config['start_year']}_{config['end_year']}.csv"
 
-        self._daily_xr: List[xr.Dataset] = None
         self._x_idx: int = 0
         self._y_idx: int = 0
+        self._daily_xr: List[xr.Dataset] = None
         self._borehole_data: xr.Dataset = None
+
+    def process(self, save_path: str) -> None:
+        """
+        Process the RCM dataset to extract data at the borehole location.
+
+        Returns:
+            xr.Dataset: MRCMAR data at the borehole location.
+        """
+
+        if os.path.exists(save_path):
+            logging.info(
+                f"Processed RCM data already exists at {save_path}. Skipping processing."
+            )
+
+        else:
+            logging.info("Reading RCM data...")
+            self._daily_xr = self._read_data()
+            logging.info("...RCM data read successfully.")
+
+            logging.info("Processing borehole data...")
+            borehole_dataframes = [
+                self._xr_to_input_dataframe(xr_data) for xr_data in self._daily_xr
+            ]
+            self._input_dataframe = pd.concat(borehole_dataframes)
+            logging.info("...borehole data processed successfully.")
+
+            os.makedirs(os.path.dirname(save_path), exist_ok=True)
+            self._input_dataframe.to_csv(save_path)
+            logging.info(f"Borehole RCM data saved to {save_path}")
+
+    @abstractmethod
+    def _read_data(self) -> None:
+        """Abstract method to read in data, to be implemented by subclasses."""
+        pass
+
+    @abstractmethod
+    def _xr_to_input_dataframe(self, xr_data: xr.Dataset) -> pd.DataFrame:
+        """Abstract method to convert xarray Dataset to pandas DataFrame, to be implemented by subclasses."""
+        pass
+
+
+class ProcessMAR(ProcessBase):
+    def __init__(self, borehole_lat: float, borehole_lon: float) -> None:
+        """Initialize with daily MAR dataset at specified borehole coordinates. Reads in .nc files from MAR data path specified in config.
+
+        Args:
+            borehole_lat (float): Latitude of borehole location.
+            borehole_lon (float): Longitude of borehole location.
+        """
+
+        self._RCM_name: str = "MAR"
+        self._save_path: str = config["force_data_save_path_pattern"].format(
+            CFM_data_path=config["CFM_data_path"],
+            rcm_name=self._RCM_name,
+            borehole_lat=borehole_lat,
+            borehole_lon=borehole_lon,
+            start_year=config["start_year"],
+            end_year=config["end_year"],
+        )
+
+        super().__init__(borehole_lat, borehole_lon)
+
 
     def process(self) -> None:
         """
@@ -39,27 +101,9 @@ class ProcessMAR:
             xr.Dataset: MAR data at the borehole location.
         """
 
-        if os.path.exists(self._save_path):
-            logging.info(
-                f"Processed MAR data already exists at {self._save_path}. Skipping processing."
-            )
-
-        else:
-            logging.info("Reading MAR data...")
-            self._daily_xr = self._read_data()
-            logging.info("...MAR data read successfully.")
-
-            logging.info("Processing borehole data...")
-            borehole_dataframes = [
-                self._xr_to_input_dataframe(xr_data) for xr_data in self._daily_xr
-            ]
-            self._input_dataframe = pd.concat(borehole_dataframes)
-            logging.info("...borehole data processed successfully.")
-
-            os.makedirs(os.path.dirname(self._save_path), exist_ok=True)
-            self._input_dataframe.to_csv(self._save_path)
-            logging.info(f"Borehole MAR data saved to {self._save_path}")
-
+        print(self._save_path)
+        super().process(self._save_path)
+    
     def _read_data(self) -> List[xr.Dataset]:
         """
         Read in the MAR .nc files from the specified data path in config.
