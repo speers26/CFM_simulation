@@ -1,3 +1,12 @@
+""" 
+Working script for plotting simulated density profiles against in situ density profiles
+could be integrated into src/plot/results.py if we decide to keep these plots
+
+Usage:
+    python density_error.py
+
+"""
+
 import matplotlib.pyplot as plt
 from typing import Dict, Tuple
 import xarray as xr
