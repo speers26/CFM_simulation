@@ -243,7 +243,9 @@ class ProcessRACMO(ProcessBase):
 
         return datasets
 
-    def _read_data_by_year_all_vars(self, year: int, all_files: List[str]) -> xr.Dataset:
+    def _read_data_by_year_all_vars(
+        self, year: int, all_files: List[str]
+    ) -> xr.Dataset:
         """
         For a given year, read all RACMO files containing any of the variables we want to read, then merge these into a single
         xarray Dataset for that year.
@@ -251,13 +253,17 @@ class ProcessRACMO(ProcessBase):
         Args:
             year (int): Year for which to read RACMO data.
             all_files (List[str]): List of all files in the RACMO data directory.
-        
+
         Returns:
             xr.Dataset: Merged xarray Dataset containing all variables we want to read for the given year.
-        
+
         """
 
-        year_files = [f"{config['RACMO_data_path']}/{file}" for file in all_files if str(year) in file]
+        year_files = [
+            f"{config['RACMO_data_path']}/{file}"
+            for file in all_files
+            if str(year) in file
+        ]
         if not year_files:
             return None
         else:
@@ -272,5 +278,4 @@ class ProcessRACMO(ProcessBase):
         return merged_dataset
 
     def _xr_to_input_dataframe(self, xr_data: xr.Dataset) -> pd.DataFrame:
-        
         logging.info("Processing XR data.")
