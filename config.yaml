@@ -35,7 +35,7 @@ MAR_to_CFM_column_map:
 ### ----------------- CFM Simulation ----------------- ###
 
 ## model run parameters
-sde: 1995.0 #spin date end
+spin_end_year: 1989 #spin date end
 runid: -9999 
 rho_bottom: 910 # density at bottom boundary condition
 sublim_sf: -1 #sublimation scaling factor, -1 for MERRA2 data, not sure for MAR data but think also -1
@@ -118,7 +118,7 @@ cfm_config:
   QMorris: 110.0e3
   timesetup: exact
   timesetup_options: [exact,interp,retmip]
-  liquid: bucket
+  liquid: resingledomain
   liquid_options: [percolation_bucket,bucketVV,resingledomain,prefsnowpack]
   merging: false
   merge_min: 1e-4

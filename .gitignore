@@ -3,3 +3,4 @@ data/
 logs/
 *.code-workspace
 *.pyc
+.vscode/settings.json

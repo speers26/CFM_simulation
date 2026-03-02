@@ -45,14 +45,14 @@ class CFMRun:
         self._force_data: pd.DataFrame = None
 
         # set json config name
-        self._json_config_name = f"CFMconfig_{borehole_lat}_{borehole_lon}_{config['start_year']}_{config['end_year']}_{self._cfm_config['physRho']}.json"
+        self._json_config_name = f"CFMconfig_{borehole_lat}_{borehole_lon}_{config['start_year']}_{config['end_year']}_{self._cfm_config['physRho']}_{self._cfm_config['liquid']}.json"
 
         # flag to indicate if output folder exists
         self._output_exists: bool = False
 
         # set output folder in config
         self._cfm_config["resultsFolder"] = (
-            f"{self._cfm_output_path}/CFMoutput_{self._cfm_config['borehole_lat']}_{self._cfm_config['borehole_lon']}_{config['start_year']}_{config['end_year']}_{self._cfm_config['physRho']}"
+            f"{self._cfm_output_path}/CFMoutput_{self._cfm_config['borehole_lat']}_{self._cfm_config['borehole_lon']}_{config['start_year']}_{config['end_year']}_{self._cfm_config['physRho']}_{self._cfm_config['liquid']}"
         )
 
         if not os.path.exists(self._cfm_config["resultsFolder"]):
@@ -101,7 +101,7 @@ class CFMRun:
                 timeres=self._cfm_config["DFresample"],
                 Tinterp="mean",
                 spin_date_st=config["start_year"],
-                spin_date_end=config["sde"],
+                spin_date_end=config["spin_end_year"],
                 melt=self._cfm_config["MELT"],
                 desired_depth=None,
                 SEB=self._cfm_config["SEB"],
