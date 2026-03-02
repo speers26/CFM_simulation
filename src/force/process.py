@@ -92,7 +92,6 @@ class ProcessMAR(ProcessBase):
 
         super().__init__(borehole_lat, borehole_lon)
 
-
     def process(self) -> None:
         """
         Process the MAR dataset to extract data at the borehole location.
@@ -103,7 +102,7 @@ class ProcessMAR(ProcessBase):
 
         print(self._save_path)
         super().process(self._save_path)
-    
+
     def _read_data(self) -> List[xr.Dataset]:
         """
         Read in the MAR .nc files from the specified data path in config.
