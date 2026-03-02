@@ -30,11 +30,18 @@ if __name__ == "__main__":
     parser.add_argument("--lat", type=float, help="Borehole latitude")
     parser.add_argument("--lon", type=float, help="Borehole longitude")
     parser.add_argument("--physrho", type=str, help="Physical densification scheme")
-    parser.add_argument("--rcm", type=str, help="RCM name to use for forcing data (e.g., MAR or RACMO)")
+    parser.add_argument(
+        "--rcm", type=str, help="RCM name to use for forcing data (e.g., MAR or RACMO)"
+    )
 
     args = parser.parse_args()
 
-    if args.lat is not None and args.lon is not None and args.physrho is not None and args.rcm is not None:
+    if (
+        args.lat is not None
+        and args.lon is not None
+        and args.physrho is not None
+        and args.rcm is not None
+    ):
         borehole_lat = args.lat
         borehole_lon = args.lon
         physRho = args.physrho
@@ -54,6 +61,8 @@ if __name__ == "__main__":
     elif rcm_name == "RACMO":
         ProcessRACMO(borehole_lat, borehole_lon).process()
     else:
-        logging.error(f"Invalid RCM name: {rcm_name}. Please choose either 'MAR' or 'RACMO'.")
+        logging.error(
+            f"Invalid RCM name: {rcm_name}. Please choose either 'MAR' or 'RACMO'."
+        )
         exit(1)
     CFMRun(borehole_lat, borehole_lon, physRho).run()

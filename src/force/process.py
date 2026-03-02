@@ -231,9 +231,9 @@ class ProcessRACMO(ProcessBase):
         super().process(self._save_path)
 
     def _read_data(self) -> List[xr.Dataset]:
-        """ Read in the RACMO .nc files from the specified data path in config, filtering for files which contain the variables we
+        """Read in the RACMO .nc files from the specified data path in config, filtering for files which contain the variables we
         want to read and which contain a year between start and end year in config."""
-        
+
         racmo_data_path = config["RACMO_data_path"]
         all_files = os.listdir(racmo_data_path)
         year_files = []
@@ -245,7 +245,6 @@ class ProcessRACMO(ProcessBase):
                             year_files.append(f"{racmo_data_path}/{file}")
                             break
         logging.info(f"RACMO files to read: {year_files}")
-
 
     def _xr_to_input_dataframe(self, xr_data: xr.Dataset) -> pd.DataFrame:
         pass
