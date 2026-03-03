@@ -263,7 +263,7 @@ class ProcessRACMO(ProcessBase):
 
         var_files = []
         for var in self._var_to_read:
-            var_file = next((file for file in year_files if f'{var}_' in file), None)
+            var_file = next((file for file in year_files if f"{var}_" in file), None)
             if var_file is not None:
                 var_files.append(var_file)
         datasets = [xr.open_dataset(file, engine="h5netcdf") for file in var_files]
@@ -272,7 +272,7 @@ class ProcessRACMO(ProcessBase):
         return merged_dataset
 
     def _xr_to_input_dataframe(self, xr_data: xr.Dataset) -> pd.DataFrame:
-        """ Takes xarray Data for a given batch of years of RACMO data, """
+        """Takes xarray Data for a given batch of years of RACMO data,"""
 
         # get indices of closest grid point to borehole
         lat_diff = np.abs(xr_data["lat"] - self._borehole_lat)
@@ -297,7 +297,7 @@ class ProcessRACMO(ProcessBase):
         borehole_df["prsn"] = np.clip(borehole_df["prsn"], a_min=0, a_max=None)
         borehole_df["mltgl"] = np.clip(borehole_df["mltgl"], a_min=0, a_max=None)
 
-        # get rf and alb 
+        # get rf and alb
         borehole_df["rf"] = borehole_df["pr"] - borehole_df["prsn"]
         borehole_df["alb"] = borehole_df["rsusgl"] / borehole_df["rsds"]
 
@@ -314,7 +314,7 @@ class ProcessRACMO(ProcessBase):
             (borehole_df.index.year >= config["start_year"])
             & (borehole_df.index.year <= config["end_year"])
         ]
-         
+
         # multiply all mass fluxes by 60*60*24 to convert from kg/m2/s to mmWE/day
         # don't include melt here because it seems to already be in daily totals
         mass_flux_columns = ["SUBLIM", "RAIN", "BDOT", "SMELT"]
@@ -325,6 +325,5 @@ class ProcessRACMO(ProcessBase):
 
         # make sure rain is positive
         borehole_df["RAIN"] = np.clip(borehole_df["RAIN"], a_min=0, a_max=None)
-        
 
         return borehole_df
