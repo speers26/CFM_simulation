@@ -40,9 +40,12 @@ class CFMRun:
             rcm_name (Literal["MAR", "RACMO"]): RCM name to use for forcing data (e.g., MAR or RACMO).
         """
 
+        # all these need to be passed in because they vary by run
         self._rcm_name: Literal["MAR", "RACMO"] = rcm_name
         self._cfm_input_path: str = f"{config['CFM_data_path']}/cfm_input"
         self._cfm_output_path: str = f"{config['CFM_data_path']}/cfm_output"
+        self._borehole_lat: float = borehole_lat
+        self._borehole_lon: float = borehole_lon
 
         # load cfm config
         self._cfm_config: dict = config["cfm_config"]
@@ -52,14 +55,14 @@ class CFMRun:
         self._force_data: pd.DataFrame = None
 
         # set json config name
-        self._json_config_name = f"CFMconfig_{borehole_lat}_{borehole_lon}_{config['start_year']}_{config['end_year']}_{self._cfm_config['physRho']}_{self._cfm_config['liquid']}.json"
+        self._json_config_name = f"CFMconfig_{self._borehole_lat}_{self._borehole_lon}_{config['start_year']}_{config['end_year']}_{self._cfm_config['physRho']}_{self._cfm_config['liquid']}.json"
 
         # flag to indicate if output folder exists
         self._output_exists: bool = False
 
         # set output folder in config
         self._cfm_config["resultsFolder"] = (
-            f"{self._cfm_output_path}/CFMoutput_{borehole_lat}_{borehole_lon}_{config['start_year']}_{config['end_year']}_{self._cfm_config['physRho']}_{self._cfm_config['liquid']}"
+            f"{self._cfm_output_path}/CFMoutput_{self._borehole_lat}_{self._borehole_lon}_{config['start_year']}_{config['end_year']}_{self._cfm_config['physRho']}_{self._cfm_config['liquid']}"
         )
 
         if not os.path.exists(self._cfm_config["resultsFolder"]):
@@ -87,7 +90,7 @@ class CFMRun:
         """
 
         # Read in forcing data
-        force_data_path = f"{self._cfm_input_path}/{self._rcm_name}_{self._cfm_config['borehole_lat']}_{self._cfm_config['borehole_lon']}_{config['start_year']}_{config['end_year']}.csv"
+        force_data_path = f"{self._cfm_input_path}/{self._rcm_name}_{self._borehole_lat}_{self._borehole_lon}_{config['start_year']}_{config['end_year']}.csv"
         if not os.path.exists(force_data_path):
             raise FileNotFoundError(
                 f"Forcing data file not found: {force_data_path}. Run read_force_data.py to generate the file."

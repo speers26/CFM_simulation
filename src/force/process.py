@@ -37,7 +37,7 @@ class ProcessBase(ABC):
         Process the RCM dataset to extract data at the borehole location.
 
         Returns:
-            xr.Dataset: MRCMAR data at the borehole location.
+            xr.Dataset: RCM data at the borehole location.
         """
 
         if os.path.exists(save_path):
@@ -83,10 +83,10 @@ class ProcessMAR(ProcessBase):
 
         super().__init__(borehole_lat, borehole_lon)
 
-        self._RCM_name: str = "MAR"
+        self._rcm_name: str = "MAR"
         self._save_path: str = config["force_data_save_path_pattern"].format(
             CFM_data_path=config["CFM_data_path"],
-            rcm_name=self._RCM_name,
+            rcm_name=self._rcm_name,
             borehole_lat=borehole_lat,
             borehole_lon=borehole_lon,
             start_year=config["start_year"],
@@ -207,10 +207,10 @@ class ProcessRACMO(ProcessBase):
 
         super().__init__(borehole_lat, borehole_lon)
 
-        self._RCM_name: str = "RACMO"
+        self._rcm_name: str = "RACMO"
         self._save_path: str = config["force_data_save_path_pattern"].format(
             CFM_data_path=config["CFM_data_path"],
-            rcm_name=self._RCM_name,
+            rcm_name=self._rcm_name,
             borehole_lat=borehole_lat,
             borehole_lon=borehole_lon,
             start_year=config["start_year"],
