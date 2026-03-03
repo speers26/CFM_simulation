@@ -232,7 +232,7 @@ class ProcessRACMO(ProcessBase):
     def _read_data(self) -> List[xr.Dataset]:
         """Read in the RACMO .nc files from the specified data path in config, filtering for files which contain the variables we
         want to read and which contain a year between start and end year in config.
-        
+
         Returns:
             List[xr.Dataset]: List of xarray Datasets for each batch of years of RACMO data
         """
@@ -277,7 +277,7 @@ class ProcessRACMO(ProcessBase):
 
     def _xr_to_input_dataframe(self, xr_data: xr.Dataset) -> pd.DataFrame:
         """Takes xarray Data for a given batch of years of RACMO data
-        
+
         Args:
             xr_data (xr.Dataset): RACMO data for a given batch of years, containing all variables we want to read.
         """
