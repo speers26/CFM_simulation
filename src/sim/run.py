@@ -6,6 +6,7 @@ import sys
 import numpy as np
 import pandas as pd
 import yaml
+from typing import Literal
 
 with open("config.yaml", "r") as file:
     config = yaml.safe_load(file)
@@ -18,11 +19,11 @@ from firn_density_nospin import FirnDensityNoSpin  # noqa: E402 # type: ignore
 
 
 class CFMRun:
-    def __init__(self, borehole_lat: float, borehole_lon: float, physRho: str) -> None:
+    def __init__(self, borehole_lat: float, borehole_lon: float, physRho: str, rcm_name: Literal["MAR", "RACMO"]) -> None:
         """Initialize CFM Run with configuration from config.yaml.
 
         Sets up paths and variables needed for the CFM run. Including:
-        - Forcing data path from which to read MAR data
+        - Forcing data path from which to read MAR or RACMO data
         - Output path to save CFM results
         - JSON configuration name saving of CFM configuration
 
@@ -30,8 +31,10 @@ class CFMRun:
             borehole_lat (float): Latitude of borehole location.
             borehole_lon (float): Longitude of borehole location.
             physRho (str): Physical densification scheme to use in CFM model.
+            rcm_name (Literal["MAR", "RACMO"]): RCM name to use for forcing data (e.g., MAR or RACMO).
         """
 
+        self._rcm_name: Literal["MAR", "RACMO"] = rcm_name
         self._cfm_input_path: str = f"{config['CFM_data_path']}/cfm_input"
         self._cfm_output_path: str = f"{config['CFM_data_path']}/cfm_output"
 
@@ -40,8 +43,6 @@ class CFMRun:
 
         # set physRho and borehole loc from argument in case we've used command line to override config
         self._cfm_config["physRho"] = physRho
-        self._cfm_config["borehole_lat"] = borehole_lat
-        self._cfm_config["borehole_lon"] = borehole_lon
         self._force_data: pd.DataFrame = None
 
         # set json config name
@@ -52,7 +53,7 @@ class CFMRun:
 
         # set output folder in config
         self._cfm_config["resultsFolder"] = (
-            f"{self._cfm_output_path}/CFMoutput_{self._cfm_config['borehole_lat']}_{self._cfm_config['borehole_lon']}_{config['start_year']}_{config['end_year']}_{self._cfm_config['physRho']}_{self._cfm_config['liquid']}"
+            f"{self._cfm_output_path}/CFMoutput_{borehole_lat}_{borehole_lon}_{config['start_year']}_{config['end_year']}_{self._cfm_config['physRho']}_{self._cfm_config['liquid']}"
         )
 
         if not os.path.exists(self._cfm_config["resultsFolder"]):
@@ -80,7 +81,7 @@ class CFMRun:
         """
 
         # Read in forcing data
-        force_data_path = f"{self._cfm_input_path}/MAR_{self._cfm_config['borehole_lat']}_{self._cfm_config['borehole_lon']}_{config['start_year']}_{config['end_year']}.csv"
+        force_data_path = f"{self._cfm_input_path}/{self._rcm_name}_{self._cfm_config['borehole_lat']}_{self._cfm_config['borehole_lon']}_{config['start_year']}_{config['end_year']}.csv"
         if not os.path.exists(force_data_path):
             raise FileNotFoundError(
                 f"Forcing data file not found: {force_data_path}. Run read_force_data.py to generate the file."

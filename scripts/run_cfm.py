@@ -66,4 +66,4 @@ if __name__ == "__main__":
         )
         exit(1)
 
-    CFMRun(borehole_lat, borehole_lon, physRho).run()
+    CFMRun(borehole_lat, borehole_lon, physRho, rcm_name).run()
