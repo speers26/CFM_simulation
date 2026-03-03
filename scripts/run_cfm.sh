@@ -33,6 +33,7 @@ run_cfm_job() {
         --lat "$lat" \
         --lon "$lon" \
         --physrho "$physrho" \
+        --rcm "$RCM_VALUE" \
         > "$log_file" 2>&1; then
         echo "SUCCESS: lat=$lat, lon=$lon, physrho=$physrho"
         ((SUCCESSFUL_RUNS++))
