@@ -231,7 +231,11 @@ class ProcessRACMO(ProcessBase):
 
     def _read_data(self) -> List[xr.Dataset]:
         """Read in the RACMO .nc files from the specified data path in config, filtering for files which contain the variables we
-        want to read and which contain a year between start and end year in config."""
+        want to read and which contain a year between start and end year in config.
+        
+        Returns:
+            List[xr.Dataset]: List of xarray Datasets for each batch of years of RACMO data
+        """
 
         racmo_data_path = config["RACMO_data_path"]
         all_files = os.listdir(racmo_data_path)
@@ -272,7 +276,11 @@ class ProcessRACMO(ProcessBase):
         return merged_dataset
 
     def _xr_to_input_dataframe(self, xr_data: xr.Dataset) -> pd.DataFrame:
-        """Takes xarray Data for a given batch of years of RACMO data,"""
+        """Takes xarray Data for a given batch of years of RACMO data
+        
+        Args:
+            xr_data (xr.Dataset): RACMO data for a given batch of years, containing all variables we want to read.
+        """
 
         # get indices of closest grid point to borehole
         lat_diff = np.abs(xr_data["lat"] - self._borehole_lat)
