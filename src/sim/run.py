@@ -55,14 +55,14 @@ class CFMRun:
         self._force_data: pd.DataFrame = None
 
         # set json config name
-        self._json_config_name = f"CFMconfig_{self._borehole_lat}_{self._borehole_lon}_{config['start_year']}_{config['end_year']}_{self._cfm_config['physRho']}_{self._cfm_config['liquid']}.json"
+        self._json_config_name = f"CFMconfig_{self._borehole_lat}_{self._borehole_lon}_{config['start_year']}_{config['end_year']}_{self._cfm_config['physRho']}_{self._cfm_config['liquid']}_{self._rcm_name}.json"
 
         # flag to indicate if output folder exists
         self._output_exists: bool = False
 
         # set output folder in config
         self._cfm_config["resultsFolder"] = (
-            f"{self._cfm_output_path}/CFMoutput_{self._borehole_lat}_{self._borehole_lon}_{config['start_year']}_{config['end_year']}_{self._cfm_config['physRho']}_{self._cfm_config['liquid']}"
+            f"{self._cfm_output_path}/CFMoutput_{self._borehole_lat}_{self._borehole_lon}_{config['start_year']}_{config['end_year']}_{self._cfm_config['physRho']}_{self._cfm_config['liquid']}_{self._rcm_name}"
         )
 
         if not os.path.exists(self._cfm_config["resultsFolder"]):
