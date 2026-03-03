@@ -227,7 +227,6 @@ class ProcessRACMO(ProcessBase):
             xr.Dataset: RACMO data at the borehole location.
         """
 
-        print(self._save_path)
         super().process(self._save_path)
 
     def _read_data(self) -> List[xr.Dataset]:
@@ -264,7 +263,7 @@ class ProcessRACMO(ProcessBase):
 
         var_files = []
         for var in self._var_to_read:
-            var_file = next((file for file in year_files if var in file), None)
+            var_file = next((file for file in year_files if f'{var}_' in file), None)
             if var_file is not None:
                 var_files.append(var_file)
         datasets = [xr.open_dataset(file, engine="h5netcdf") for file in var_files]
@@ -273,4 +272,59 @@ class ProcessRACMO(ProcessBase):
         return merged_dataset
 
     def _xr_to_input_dataframe(self, xr_data: xr.Dataset) -> pd.DataFrame:
-        logging.info("Processing XR data.")
+        """ Takes xarray Data for a given batch of years of RACMO data, """
+
+        # get indices of closest grid point to borehole
+        lat_diff = np.abs(xr_data["lat"] - self._borehole_lat)
+        lon_diff = np.abs(xr_data["lon"] - self._borehole_lon)
+        distance = np.sqrt(lat_diff**2 + lon_diff**2)
+        y_idx, x_idx = np.unravel_index(distance.argmin(), distance.shape)
+
+        # find data at borehole location
+        # can use any coordinate as the indexing is the same for all
+        borehole_data = xr_data.isel(rlat=y_idx, rlon=x_idx)
+
+        # drop anything not in var_to_read
+        borehole_data = borehole_data.drop_vars(
+            [var for var in borehole_data.data_vars if var not in self._var_to_read]
+        )
+
+        # convert to dataframe
+        borehole_df = borehole_data.to_dataframe().reset_index()
+
+        # ensure mass fluxes are positive
+        borehole_df["pr"] = np.clip(borehole_df["pr"], a_min=0, a_max=None)
+        borehole_df["prsn"] = np.clip(borehole_df["prsn"], a_min=0, a_max=None)
+        borehole_df["mltgl"] = np.clip(borehole_df["mltgl"], a_min=0, a_max=None)
+
+        # get rf and alb 
+        borehole_df["rf"] = borehole_df["pr"] - borehole_df["prsn"]
+        borehole_df["alb"] = borehole_df["rsusgl"] / borehole_df["rsds"]
+
+        # rename columns to match CFM input column names
+        mapping = config["RACMO_to_CFM_column_map"]
+        borehole_df.rename(columns=mapping, inplace=True)
+        borehole_df.set_index("time", inplace=True)
+
+        # drop unneeded columns
+        borehole_df = borehole_df[list(mapping.values())]
+
+        # only keep dates in the time range
+        borehole_df = borehole_df[
+            (borehole_df.index.year >= config["start_year"])
+            & (borehole_df.index.year <= config["end_year"])
+        ]
+         
+        # multiply all mass fluxes by 60*60*24 to convert from kg/m2/s to mmWE/day
+        # don't include melt here because it seems to already be in daily totals
+        mass_flux_columns = ["SUBLIM", "RAIN", "BDOT", "SMELT"]
+
+        for col in mass_flux_columns:
+            if col in borehole_df.columns:
+                borehole_df[col] = borehole_df[col] * 60 * 60 * 24
+
+        # make sure rain is positive
+        borehole_df["RAIN"] = np.clip(borehole_df["RAIN"], a_min=0, a_max=None)
+        
+
+        return borehole_df
