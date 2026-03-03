@@ -8,11 +8,11 @@ location specified in config file. Also saves the CFM configuration used for the
 
 Usage:
     python run_cfm.py
-    python run_cfm.py --lat <latitude> --lon <longitude> --physrho <physrho_value>
+    python run_cfm.py --lat <latitude> --lon <longitude> --physrho <physrho_value> -rcm <rcm_name>
 
 """
 
-from force.process import ProcessMAR
+from force.process import ProcessMAR, ProcessRACMO
 from sim.run import CFMRun
 import yaml
 import argparse
@@ -30,21 +30,40 @@ if __name__ == "__main__":
     parser.add_argument("--lat", type=float, help="Borehole latitude")
     parser.add_argument("--lon", type=float, help="Borehole longitude")
     parser.add_argument("--physrho", type=str, help="Physical densification scheme")
+    parser.add_argument(
+        "--rcm", type=str, help="RCM name to use for forcing data (e.g., MAR or RACMO)"
+    )
 
     args = parser.parse_args()
 
-    if args.lat is not None and args.lon is not None and args.physrho is not None:
+    if (
+        args.lat is not None
+        and args.lon is not None
+        and args.physrho is not None
+        and args.rcm is not None
+    ):
         borehole_lat = args.lat
         borehole_lon = args.lon
         physRho = args.physrho
+        rcm_name = args.rcm
         logging.info(
-            f"Using command line arguments: lat={borehole_lat}, lon={borehole_lon}, physrho={physRho}"
+            f"Using command line arguments: lat={borehole_lat}, lon={borehole_lon}, physrho={physRho}, rcm={rcm_name}"
         )
     else:
         borehole_lat = config["borehole_lat"]
         borehole_lon = config["borehole_lon"]
+        rcm_name = config["rcm_name"]
         physRho = config["cfm_config"]["physRho"]
         logging.info("Using borehole location and physrho from config.yaml")
 
-    ProcessMAR(borehole_lat, borehole_lon).process()
-    CFMRun(borehole_lat, borehole_lon, physRho).run()
+    if rcm_name == "MAR":
+        ProcessMAR(borehole_lat, borehole_lon).process()
+    elif rcm_name == "RACMO":
+        ProcessRACMO(borehole_lat, borehole_lon).process()
+    else:
+        logging.error(
+            f"Invalid RCM name: {rcm_name}. Please choose either 'MAR' or 'RACMO'."
+        )
+        exit(1)
+
+    CFMRun(borehole_lat, borehole_lon, physRho, rcm_name).run()

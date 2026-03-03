@@ -2,6 +2,6 @@
 
 __version__ = "0.1.0"
 
-from .process import ProcessMAR
+from .process import ProcessMAR, ProcessRACMO
 
-__all__ = ["ProcessMAR"]
+__all__ = ["ProcessMAR", "ProcessRACMO"]

@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 import xarray as xr
 import yaml
+from abc import ABC, abstractmethod
 
 with open("config.yaml", "r") as file:
     config = yaml.safe_load(file)
@@ -13,9 +14,10 @@ with open("config.yaml", "r") as file:
 logging.basicConfig(level=logging.INFO)
 
 
-class ProcessMAR:
+class ProcessBase(ABC):
     def __init__(self, borehole_lat: float, borehole_lon: float) -> None:
-        """Initialize with daily MAR dataset at specified borehole coordinates. Reads in .nc files from MAR data path specified in config.
+        """Base class for processing data at specified borehole coordinates. Subclasses should implement the process method
+        to read in and process data to their relevant save directory.
 
         Args:
             borehole_lat (float): Latitude of borehole location.
@@ -24,12 +26,72 @@ class ProcessMAR:
 
         self._borehole_lat: float = borehole_lat
         self._borehole_lon: float = borehole_lon
-        self._save_path: str = f"{config['CFM_data_path']}/cfm_input/MAR_{self._borehole_lat}_{self._borehole_lon}_{config['start_year']}_{config['end_year']}.csv"
 
-        self._daily_xr: List[xr.Dataset] = None
         self._x_idx: int = 0
         self._y_idx: int = 0
+        self._daily_xr: List[xr.Dataset] = None
         self._borehole_data: xr.Dataset = None
+
+    def process(self, save_path: str) -> None:
+        """
+        Process the RCM dataset to extract data at the borehole location.
+
+        Returns:
+            xr.Dataset: RCM data at the borehole location.
+        """
+
+        if os.path.exists(save_path):
+            logging.info(
+                f"Processed RCM data already exists at {save_path}. Skipping processing."
+            )
+
+        else:
+            logging.info("Reading RCM data...")
+            self._daily_xr = self._read_data()
+            logging.info("...RCM data read successfully.")
+
+            logging.info("Processing borehole data...")
+            borehole_dataframes = [
+                self._xr_to_input_dataframe(xr_data) for xr_data in self._daily_xr
+            ]
+            self._input_dataframe = pd.concat(borehole_dataframes)
+            logging.info("...borehole data processed successfully.")
+
+            os.makedirs(os.path.dirname(save_path), exist_ok=True)
+            self._input_dataframe.to_csv(save_path)
+            logging.info(f"Borehole RCM data saved to {save_path}")
+
+    @abstractmethod
+    def _read_data(self) -> List[xr.Dataset]:
+        """Abstract method to read in data, to be implemented by subclasses."""
+        pass
+
+    @abstractmethod
+    def _xr_to_input_dataframe(self, xr_data: xr.Dataset) -> pd.DataFrame:
+        """Abstract method to convert xarray Dataset to pandas DataFrame, to be implemented by subclasses."""
+        pass
+
+
+class ProcessMAR(ProcessBase):
+    def __init__(self, borehole_lat: float, borehole_lon: float) -> None:
+        """Initialize with daily MAR dataset at specified borehole coordinates. Reads in .nc files from MAR data path specified in config.
+
+        Args:
+            borehole_lat (float): Latitude of borehole location.
+            borehole_lon (float): Longitude of borehole location.
+        """
+
+        super().__init__(borehole_lat, borehole_lon)
+
+        self._rcm_name: str = "MAR"
+        self._save_path: str = config["force_data_save_path_pattern"].format(
+            CFM_data_path=config["CFM_data_path"],
+            rcm_name=self._rcm_name,
+            borehole_lat=borehole_lat,
+            borehole_lon=borehole_lon,
+            start_year=config["start_year"],
+            end_year=config["end_year"],
+        )
 
     def process(self) -> None:
         """
@@ -39,26 +101,7 @@ class ProcessMAR:
             xr.Dataset: MAR data at the borehole location.
         """
 
-        if os.path.exists(self._save_path):
-            logging.info(
-                f"Processed MAR data already exists at {self._save_path}. Skipping processing."
-            )
-
-        else:
-            logging.info("Reading MAR data...")
-            self._daily_xr = self._read_data()
-            logging.info("...MAR data read successfully.")
-
-            logging.info("Processing borehole data...")
-            borehole_dataframes = [
-                self._xr_to_input_dataframe(xr_data) for xr_data in self._daily_xr
-            ]
-            self._input_dataframe = pd.concat(borehole_dataframes)
-            logging.info("...borehole data processed successfully.")
-
-            os.makedirs(os.path.dirname(self._save_path), exist_ok=True)
-            self._input_dataframe.to_csv(self._save_path)
-            logging.info(f"Borehole MAR data saved to {self._save_path}")
+        super().process(self._save_path)
 
     def _read_data(self) -> List[xr.Dataset]:
         """
@@ -148,5 +191,147 @@ class ProcessMAR:
 
         # remove duplicate times
         borehole_df = borehole_df[~borehole_df.index.duplicated(keep="first")]
+
+        return borehole_df
+
+
+class ProcessRACMO(ProcessBase):
+    def __init__(self, borehole_lat: float, borehole_lon: float) -> None:
+        """Initialize with daily RACMO dataset at specified borehole coordinates. Reads in .nc files from RACMO data path
+        specified in config.
+
+        Args:
+            borehole_lat (float): Latitude of borehole location.
+            borehole_lon (float): Longitude of borehole location.
+        """
+
+        super().__init__(borehole_lat, borehole_lon)
+
+        self._rcm_name: str = "RACMO"
+        self._save_path: str = config["force_data_save_path_pattern"].format(
+            CFM_data_path=config["CFM_data_path"],
+            rcm_name=self._rcm_name,
+            borehole_lat=borehole_lat,
+            borehole_lon=borehole_lon,
+            start_year=config["start_year"],
+            end_year=config["end_year"],
+        )
+        self._var_to_read = list(config["RACMO_to_CFM_column_map"].keys())
+        self._var_to_read += config["RACMO_additional_vars"]
+
+    def process(self) -> None:
+        """
+        Process the RACMO dataset to extract data at the borehole location.
+
+        Returns:
+            xr.Dataset: RACMO data at the borehole location.
+        """
+
+        super().process(self._save_path)
+
+    def _read_data(self) -> List[xr.Dataset]:
+        """Read in the RACMO .nc files from the specified data path in config, filtering for files which contain the variables we
+        want to read and which contain a year between start and end year in config.
+
+        Returns:
+            List[xr.Dataset]: List of xarray Datasets for each batch of years of RACMO data
+        """
+
+        racmo_data_path = config["RACMO_data_path"]
+        all_files = os.listdir(racmo_data_path)
+        datasets = []
+
+        for year in range(config["start_year"], config["end_year"] + 1):
+            year_files = [
+                f"{config['RACMO_data_path']}/{file}"
+                for file in all_files
+                if str(year) in file
+            ]
+            if year_files:
+                datasets.append(self._read_data_by_year_all_vars(year_files))
+
+        return datasets
+
+    def _read_data_by_year_all_vars(self, year_files: List[str]) -> xr.Dataset:
+        """
+        For a given year, read all RACMO files containing any of the variables we want to read, then merge these into a single
+        xarray Dataset for that year.
+
+        Args:
+            year_files (List[str]): List of all files in the RACMO data directory with given year in name.
+
+        Returns:
+            xr.Dataset: Merged xarray Dataset containing all variables we want to read for the given year.
+
+        """
+
+        var_files = []
+        for var in self._var_to_read:
+            var_file = next((file for file in year_files if f"{var}_" in file), None)
+            if var_file is not None:
+                var_files.append(var_file)
+        datasets = [xr.open_dataset(file, engine="h5netcdf") for file in var_files]
+        merged_dataset = xr.merge(datasets)
+
+        return merged_dataset
+
+    def _xr_to_input_dataframe(self, xr_data: xr.Dataset) -> pd.DataFrame:
+        """Takes xarray Data for a given batch of years of RACMO data
+
+        Args:
+            xr_data (xr.Dataset): RACMO data for a given batch of years, containing all variables we want to read.
+        """
+
+        # get indices of closest grid point to borehole
+        lat_diff = np.abs(xr_data["lat"] - self._borehole_lat)
+        lon_diff = np.abs(xr_data["lon"] - self._borehole_lon)
+        distance = np.sqrt(lat_diff**2 + lon_diff**2)
+        y_idx, x_idx = np.unravel_index(distance.argmin(), distance.shape)
+
+        # find data at borehole location
+        # can use any coordinate as the indexing is the same for all
+        borehole_data = xr_data.isel(rlat=y_idx, rlon=x_idx)
+
+        # drop anything not in var_to_read
+        borehole_data = borehole_data.drop_vars(
+            [var for var in borehole_data.data_vars if var not in self._var_to_read]
+        )
+
+        # convert to dataframe
+        borehole_df = borehole_data.to_dataframe().reset_index()
+
+        # ensure mass fluxes are positive
+        borehole_df["pr"] = np.clip(borehole_df["pr"], a_min=0, a_max=None)
+        borehole_df["prsn"] = np.clip(borehole_df["prsn"], a_min=0, a_max=None)
+        borehole_df["mltgl"] = np.clip(borehole_df["mltgl"], a_min=0, a_max=None)
+
+        # get rf and alb
+        borehole_df["rf"] = borehole_df["pr"] - borehole_df["prsn"]
+        borehole_df["alb"] = borehole_df["rsusgl"] / borehole_df["rsds"]
+
+        # rename columns to match CFM input column names
+        mapping = config["RACMO_to_CFM_column_map"]
+        borehole_df.rename(columns=mapping, inplace=True)
+        borehole_df.set_index("time", inplace=True)
+
+        # drop unneeded columns
+        borehole_df = borehole_df[list(mapping.values())]
+
+        # only keep dates in the time range
+        borehole_df = borehole_df[
+            (borehole_df.index.year >= config["start_year"])
+            & (borehole_df.index.year <= config["end_year"])
+        ]
+
+        # multiply all mass fluxes by 60*60*24 to convert from kg/m2/s to mmWE/day
+        # don't include melt here because it seems to already be in daily totals
+        mass_flux_columns = ["SUBLIM", "RAIN", "BDOT", "SMELT"]
+
+        for col in mass_flux_columns:
+            if col in borehole_df.columns:
+                borehole_df[col] = borehole_df[col] * 60 * 60 * 24
+
+        # make sure rain is positive
+        borehole_df["RAIN"] = np.clip(borehole_df["RAIN"], a_min=0, a_max=None)
 
         return borehole_df
