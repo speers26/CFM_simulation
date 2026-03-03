@@ -36,6 +36,9 @@ if __name__ == "__main__":
     ]
     start, end = 1979, 2024
 
+    rcm_name = "RACMO"
+    melt_scheme = "bucket"
+
     summer_2014 = [
         2014 + 11 / 12,
         2015 + 2 / 12,
@@ -60,7 +63,7 @@ if __name__ == "__main__":
         # plt.plot(in_situ_density, in_situ_depth, label="In situ", color="k", linewidth=1)
         for physrho in physrho_values:
             # load simulation
-            output_path = f"{config['CFM_data_path']}/cfm_output/CFMoutput_{lat}_{lon}_{start}_{end}_{physrho}/CFMresults.hdf5"
+            output_path = f"{config['CFM_data_path']}/cfm_output/CFMoutput_{lat}_{lon}_{start}_{end}_{physrho}_{melt_scheme}_{rcm_name}/CFMresults.hdf5"
             with xr.open_dataset(output_path, engine="h5netcdf") as ds:
                 results_dict = {
                     "model_time_matrix": ds["density"][1:, 0],
@@ -128,5 +131,5 @@ if __name__ == "__main__":
         plt.legend()
         plt.grid()
         plt.savefig(
-            f"/home/speersm/luna/CPOM/speersm/CFM_data/cfm_figures/errors/{site}_diff.png"
+            f"/home/speersm/luna/CPOM/speersm/CFM_data/cfm_figures/errors/{site}_diff_{melt_scheme}_{rcm_name}.png"
         )
