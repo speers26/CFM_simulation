@@ -144,7 +144,7 @@ cfm_config:
   QMorris: 110.0e3
   timesetup: exact
   timesetup_options: [exact,interp,retmip]
-  liquid: percolation_bucket
+  liquid: bucket
   liquid_options: [percolation_bucket,bucketVV,resingledomain,prefsnowpack]
   merging: false
   merge_min: 1e-4
