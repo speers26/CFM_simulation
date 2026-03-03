@@ -3,8 +3,8 @@
 # Define arrays of latitude/longitude pairs (same index = same location)
 LATITUDES=(-66.403 -66.588 -67.000 -67.444 -67.500)
 LONGITUDES=(-63.376 -63.212 -61.486 -64.953 -63.336)
-PHYSRHO_VALUES=("Barnola1991" "Goujon2003" "Li2015" "Helsen2008" "Ligtenberg2011")
-RCM_VALUE="RACMO"  # or "MAR"
+PHYSRHO_VALUES=("GSFC2020" "HLdynamic" "Crocus" "Barnola1991" "Ligtenberg2011")
+RCM_VALUE="RACMO" # or "MAR"
 
 # Counters for tracking results
 TOTAL_RUNS=0
@@ -25,7 +25,7 @@ run_cfm_job() {
     local lon=$2
     local physrho=$3
 
-    local log_file="$LOG_DIR/cfm_lat${lat}_lon${lon}_${physrho}_${TIMESTAMP}.log"
+    local log_file="$LOG_DIR/cfm_lat${lat}_lon${lon}_${physrho}_${RCM_VALUE}_${TIMESTAMP}.log"
 
     echo "Running CFM for lat=$lat, lon=$lon, physrho=$physrho (logging to $log_file)"
     
