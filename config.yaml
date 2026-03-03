@@ -44,13 +44,13 @@ RACMO_to_CFM_column_map:
   tas: T2m # 2m above surface temperature
   ts: TSKIN # surface temperature
   sublgl: SUBLIM # sublimation
-  hlfssl: QH # sensible heat flux
+  hfssgl: QH # sensible heat flux
   hflsgl: QL # latent heat flux
   rsds: SW_d # downward shortwave radiation
   rlds: LW_d # downward longwave radiation
-  NONE: RAIN # rainfall
+  rf: RAIN # rainfall - to be calculated as rf = pr - prsn, where pr is total precipitation and prsn is snowfall
   prsn: BDOT # snowfall
-  NONE: ALBEDO # surface albedo
+  alb: ALBEDO # surface albedo - to be calculated as alb = rsusgl / rsds, where rsusgl is upward shortwave radiation and rsds is downward shortwave radiation
   mltgl: SMELT # melt
 
 ## additional RACMO variables to read in to calculate CFM inputs

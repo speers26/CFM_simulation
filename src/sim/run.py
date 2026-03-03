@@ -19,7 +19,13 @@ from firn_density_nospin import FirnDensityNoSpin  # noqa: E402 # type: ignore
 
 
 class CFMRun:
-    def __init__(self, borehole_lat: float, borehole_lon: float, physRho: str, rcm_name: Literal["MAR", "RACMO"]) -> None:
+    def __init__(
+        self,
+        borehole_lat: float,
+        borehole_lon: float,
+        physRho: str,
+        rcm_name: Literal["MAR", "RACMO"],
+    ) -> None:
         """Initialize CFM Run with configuration from config.yaml.
 
         Sets up paths and variables needed for the CFM run. Including:
