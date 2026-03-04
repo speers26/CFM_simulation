@@ -312,7 +312,7 @@ class ProcessRACMO(ProcessBase):
         # rename columns to match CFM input column names
         mapping = config["RACMO_to_CFM_column_map"]
         borehole_df.rename(columns=mapping, inplace=True)
-        borehole_df.set_index("time", inplace=True)
+        borehole_df.set_index("TIME", inplace=True)
 
         # drop unneeded columns
         borehole_df = borehole_df[list(mapping.values())]
@@ -333,5 +333,8 @@ class ProcessRACMO(ProcessBase):
 
         # make sure rain is positive
         borehole_df["RAIN"] = np.clip(borehole_df["RAIN"], a_min=0, a_max=None)
+
+        # remove duplicate times
+        borehole_df = borehole_df[~borehole_df.index.duplicated(keep="first")]
 
         return borehole_df

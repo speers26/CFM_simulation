@@ -1,10 +1,12 @@
 #!/bin/bash
 
 # Define arrays of latitude/longitude pairs (same index = same location)
-LATITUDES=(-66.403 -66.588 -67.000 -67.444 -67.500)
-LONGITUDES=(-63.376 -63.212 -61.486 -64.953 -63.336)
+# LATITUDES=(-66.403 -66.588 -67.000 -67.444 -67.500)
+# LONGITUDES=(-63.376 -63.212 -61.486 -64.953 -63.336)
+LATITUDES=(-67.108150 -68.300383 -68.394733 -68.394667 -67.564433)
+LONGITUDES=(-61.287483 -64.148500 -64.713083 -64.710167 -63.257333)
 PHYSRHO_VALUES=("GSFC2020" "HLdynamic" "Crocus" "Barnola1991" "Ligtenberg2011")
-RCM_VALUE="RACMO" # or "MAR"
+RCM_VALUES=("RACMO" "MAR")
 LIQUID_VALUE="bucket"
 
 # Counters for tracking results
@@ -25,22 +27,23 @@ run_cfm_job() {
     local lat=$1
     local lon=$2
     local physrho=$3
+    local rcm=$4
 
-    local log_file="$LOG_DIR/cfm_lat${lat}_lon${lon}_${physrho}_${RCM_VALUE}_${TIMESTAMP}.log"
+    local log_file="$LOG_DIR/cfm_lat${lat}_lon${lon}_${physrho}_${rcm}_${TIMESTAMP}.log"
 
-    echo "Running CFM for lat=$lat, lon=$lon, physrho=$physrho (logging to $log_file)"
-    
+    echo "Running CFM for lat=$lat, lon=$lon, physrho=$physrho, rcm=$rcm (logging to $log_file)"
+
     if python /home/speersm/luna/CPOM/speersm/CFM_simulation/scripts/run_cfm.py \
         --lat "$lat" \
         --lon "$lon" \
         --physrho "$physrho" \
-        --rcm "$RCM_VALUE" \
+        --rcm "$rcm" \
         --liquid "$LIQUID_VALUE" \
         > "$log_file" 2>&1; then
-        echo "SUCCESS: lat=$lat, lon=$lon, physrho=$physrho"
+        echo "SUCCESS: lat=$lat, lon=$lon, physrho=$physrho, rcm=$rcm"
         ((SUCCESSFUL_RUNS++))
     else
-        echo "FAILED: lat=$lat, lon=$lon, physrho=$physrho"
+        echo "FAILED: lat=$lat, lon=$lon, physrho=$physrho, rcm=$rcm"
         ((FAILED_RUNS++))
     fi
 }
@@ -50,8 +53,10 @@ for i in "${!LATITUDES[@]}"; do
     LAT=${LATITUDES[$i]}
     LON=${LONGITUDES[$i]}
     for PHYSRHO in "${PHYSRHO_VALUES[@]}"; do
-        ((TOTAL_RUNS++))
-        run_cfm_job "$LAT" "$LON" "$PHYSRHO" || true
+        for RCM in "${RCM_VALUES[@]}"; do
+            ((TOTAL_RUNS++))
+            run_cfm_job "$LAT" "$LON" "$PHYSRHO" "$RCM" || true
+        done
     done
 done
 
