@@ -22,7 +22,6 @@ with open("config.yaml", "r") as f:
     config = yaml.safe_load(f)
 
 if __name__ == "__main__":
-
     borehole_sites: Dict[str, Tuple[float, float]] = {
         "CI-0": (-66.403, -63.376),
         "CI-22": (-66.588, -63.212),
@@ -52,12 +51,22 @@ if __name__ == "__main__":
         racmo_data = racmo_data_dict[site]
 
         # Example variables to plot (these should match the columns in your data)
-        variables_to_plot = mar_data.columns.difference(["TIME"])  # Assuming 'TIME' is the time column
+        variables_to_plot = mar_data.columns.difference(
+            ["TIME"]
+        )  # Assuming 'TIME' is the time column
 
         for var in variables_to_plot:
             plt.figure(figsize=(10, 6))
-            plt.plot(mar_data[var], label="MAR", color="blue", linestyle="--", alpha=0.5)
-            plt.plot(racmo_data[var], label="RACMO", color="orange", linestyle="--", alpha=0.5)
+            plt.plot(
+                mar_data[var], label="MAR", color="blue", linestyle="--", alpha=0.5
+            )
+            plt.plot(
+                racmo_data[var],
+                label="RACMO",
+                color="orange",
+                linestyle="--",
+                alpha=0.5,
+            )
             plt.title(f"{var.capitalize()} Time Series at {site}")
             plt.xlabel("Time")
             plt.ylabel(var.capitalize())
@@ -67,4 +76,6 @@ if __name__ == "__main__":
             plt.savefig(f"{save_dir}/{site}_{var}_timeseries.png")
             plt.close()
 
-            logging.info(f"Saved time series plot for {var} at {site} to {save_dir}/{site}_{var}_timeseries.png")
+            logging.info(
+                f"Saved time series plot for {var} at {site} to {save_dir}/{site}_{var}_timeseries.png"
+            )
