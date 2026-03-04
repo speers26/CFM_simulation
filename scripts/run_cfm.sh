@@ -4,7 +4,7 @@
 LATITUDES=(-66.403 -66.588 -67.000 -67.444 -67.500)
 LONGITUDES=(-63.376 -63.212 -61.486 -64.953 -63.336)
 PHYSRHO_VALUES=("GSFC2020" "HLdynamic" "Crocus" "Barnola1991" "Ligtenberg2011")
-RCM_VALUE="RACMO" # or "MAR"
+RCM_VALUES=("RACMO")
 LIQUID_VALUE="bucket"
 
 # Counters for tracking results
