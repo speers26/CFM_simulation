@@ -61,6 +61,7 @@ if __name__ == "__main__":
                 mar_data[var], label="MAR", color="blue", linestyle="--", alpha=0.5
             )
             plt.plot(
+                #only plot first half of racmo data
                 racmo_data[var],
                 label="RACMO",
                 color="orange",
@@ -78,4 +79,30 @@ if __name__ == "__main__":
 
             logging.info(
                 f"Saved time series plot for {var} at {site} to {save_dir}/{site}_{var}_timeseries.png"
+            )
+
+        
+        # also plot variables against each other and get correlation coefficient
+        for var in variables_to_plot:
+            correlation = mar_data[var].corr(racmo_data[var])
+
+            plt.figure(figsize=(10, 6))
+            plt.scatter(
+                mar_data[var],
+                racmo_data[var],
+                label="MAR vs RACMO",
+                color="purple",
+                alpha=0.5,
+            )
+            plt.title(f"{var.capitalize()} Scatter Plot at {site} (Correlation: {correlation:.2f})")
+            plt.xlabel("MAR " + var.capitalize())
+            plt.ylabel("RACMO " + var.capitalize())
+            plt.legend()
+            plt.grid()
+            plt.tight_layout()
+            plt.savefig(f"{save_dir}/{site}_{var}_scatter.png")
+            plt.close()
+
+            logging.info(
+                f"Saved scatter plot for {var} at {site} to {save_dir}/{site}_{var}_scatter.png with correlation coefficient: {correlation:.2f}"
             )

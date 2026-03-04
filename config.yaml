@@ -11,7 +11,7 @@ force_data_save_path_pattern: "{CFM_data_path}/cfm_input/{rcm_name}_{borehole_la
 
 # Period
 start_year: 1979
-end_year: 2023
+end_year: 2024
 
 # Borehole location
 borehole_lat: -66.403
