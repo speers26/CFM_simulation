@@ -16,6 +16,8 @@ echo "Log file: $LOG_FILE"
 LATITUDES=(-66.403 -66.588 -67.000 -67.444 -67.500)         
 LONGITUDES=(-63.376 -63.212 -61.486 -64.953 -63.336)
 PHYSRHO_VALUES=("HLdynamic" "GSFC2020" "Crocus" "Barnola1991" "Ligtenberg2011")
+RCM_VALUE="RACMO" # or "MAR"
+LIQUID_VALUE="bucket"
 
 # Function to run a single CFM plotting script
 run_cfm_plot() {
@@ -27,7 +29,9 @@ run_cfm_plot() {
     if python /home/speersm/luna/CPOM/speersm/CFM_simulation/scripts/plot_cfm.py \
         --lat "$lat" \
         --lon "$lon" \
-        --physrhols "${physrho_values[@]}"; then
+        --physrhols "${physrho_values[@]}" \
+        --rcm "$RCM_VALUE" \
+        --liquid "$LIQUID_VALUE"; then
         echo "SUCCESS: lat=$lat, lon=$lon, physrho=${physrho_values[*]}"
     else
         echo "FAILED: lat=$lat, lon=$lon, physrho=${physrho_values[*]}"

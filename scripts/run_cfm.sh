@@ -5,6 +5,7 @@ LATITUDES=(-66.403 -66.588 -67.000 -67.444 -67.500)
 LONGITUDES=(-63.376 -63.212 -61.486 -64.953 -63.336)
 PHYSRHO_VALUES=("GSFC2020" "HLdynamic" "Crocus" "Barnola1991" "Ligtenberg2011")
 RCM_VALUE="RACMO" # or "MAR"
+LIQUID_VALUE="bucket"
 
 # Counters for tracking results
 TOTAL_RUNS=0
@@ -34,6 +35,7 @@ run_cfm_job() {
         --lon "$lon" \
         --physrho "$physrho" \
         --rcm "$RCM_VALUE" \
+        --liquid "$LIQUID_VALUE" \
         > "$log_file" 2>&1; then
         echo "SUCCESS: lat=$lat, lon=$lon, physrho=$physrho"
         ((SUCCESSFUL_RUNS++))

@@ -25,6 +25,7 @@ class CFMRun:
         borehole_lon: float,
         physRho: str,
         rcm_name: Literal["MAR", "RACMO"],
+        liquid: Literal["bucket"],
     ) -> None:
         """Initialize CFM Run with configuration from config.yaml.
 
@@ -38,6 +39,7 @@ class CFMRun:
             borehole_lon (float): Longitude of borehole location.
             physRho (str): Physical densification scheme to use in CFM model.
             rcm_name (Literal["MAR", "RACMO"]): RCM name to use for forcing data (e.g., MAR or RACMO).
+            liquid (Literal["bucket"]): meltwater scheme to use (currently only bucket)
         """
 
         # all these need to be passed in because they vary by run
@@ -53,6 +55,9 @@ class CFMRun:
         # set physRho and borehole loc from argument in case we've used command line to override config
         self._cfm_config["physRho"] = physRho
         self._force_data: pd.DataFrame = None
+
+        # also set the liquid scheme in the config
+        self._cfm_config["liquid"] = liquid
 
         # set json config name
         self._json_config_name = f"CFMconfig_{self._borehole_lat}_{self._borehole_lon}_{config['start_year']}_{config['end_year']}_{self._cfm_config['physRho']}_{self._cfm_config['liquid']}_{self._rcm_name}.json"

@@ -1,6 +1,6 @@
 import logging
 import os
-from typing import Dict, List
+from typing import Dict, List, Literal
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -14,23 +14,35 @@ with open("config.yaml", "r") as file:
 
 
 class ResultsPlotter:
-    def __init__(self, lat: float, lon: float, phys_rho: List[str]) -> None:
+    def __init__(
+        self,
+        lat: float,
+        lon: float,
+        phys_rho: List[str],
+        rcm_name: Literal["RACMO", "MAR"],
+        liquid: Literal["bucket"],
+    ) -> None:
         """Initialize the ResultsPlotter with borehole location and physical densification schemes.
         Args:
             lat (float): Borehole latitude
             lon (float): Borehole longitude
             phys_rho (List[str]): List of physical densification schemes to plot
+            rcm_name (Literal["RACMO", "MAR"]): RCM name to use for forcing data (e.g., MAR or RACMO)
+            liquid (Literal["bucket"]): Meltwater scheme to use (currently only bucket)
         """
 
         self.lat: float = lat
         self.lon: float = lon
         self.phys_rho: List[str] = phys_rho
+        self.rcm_name: Literal["RACMO", "MAR"] = rcm_name
+        self.liquid: Literal["bucket"] = liquid
+
         phys_rho_str = "_".join(self.phys_rho)
         self._output_paths: List[str] = [
-            f"{config['CFM_data_path']}/cfm_output/CFMoutput_{self.lat}_{self.lon}_{config['start_year']}_{config['end_year']}_{scheme}"
+            f"{config['CFM_data_path']}/cfm_output/CFMoutput_{self.lat}_{self.lon}_{config['start_year']}_{config['end_year']}_{scheme}_{self.liquid}_{self.rcm_name}"
             for scheme in self.phys_rho
         ]
-        self._figure_path: str = f"{config['CFM_data_path']}/cfm_figures/figures_{self.lat}_{self.lon}_{config['start_year']}_{config['end_year']}_{phys_rho_str}"
+        self._figure_path: str = f"{config['CFM_data_path']}/cfm_figures/figures_{self.lat}_{self.lon}_{config['start_year']}_{config['end_year']}_{phys_rho_str}_{self.liquid}_{self.rcm_name}"
         os.makedirs(self._figure_path, exist_ok=True)
 
         self._thickness_change_range: List[float] = config[

@@ -28,19 +28,39 @@ if __name__ == "__main__":
         type=str,
         help="List of physical densification schemes",
     )
+    parser.add_argument(
+        "--rcm",
+        type=str,
+        help="RCM name to use for forcing data (e.g., MAR or RACMO)",
+    )
+    parser.add_argument(
+        "--liquid",
+        type=str,
+        help="Meltwater scheme to use (currently only bucket)",
+    )
 
     args = parser.parse_args()
-    if args.lat is not None and args.lon is not None and args.physrhols is not None:
+    if (
+        args.lat is not None
+        and args.lon is not None
+        and args.physrhols is not None
+        and args.rcm is not None
+        and args.liquid is not None
+    ):
         logging.info(
-            f"Using command line arguments: lat={args.lat}, lon={args.lon}, physrho={args.physrhols}"
+            f"Using command line arguments: lat={args.lat}, lon={args.lon}, physrho={args.physrhols}, rcm={args.rcm}, liquid={args.liquid}"
         )
         lat = args.lat
         lon = args.lon
         phys_rho = args.physrhols
+        rcm_name = args.rcm
+        liquid = args.liquid
     else:
         lat = config["borehole_lat"]
         lon = config["borehole_lon"]
         phys_rho = list(config["cfm_config"]["physRho"])
+        rcm_name = config["rcm_name"]
+        liquid = config["cfm_config"]["liquid"]
         logging.info("Using borehole location and physrho from config.yaml")
 
-    ResultsPlotter(lat, lon, phys_rho).plot()
+    ResultsPlotter(lat, lon, phys_rho, rcm_name, liquid).plot()

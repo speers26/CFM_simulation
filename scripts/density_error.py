@@ -5,6 +5,18 @@ could be integrated into src/plot/results.py if we decide to keep these plots
 Usage:
     python density_error.py
 
+Requires specification of which sites to plot in borehole_sites dictionary, which physical densification schemes
+to plot in physrho_values list, and the RCM and melt scheme to use for loading the correct simulation output.
+
+The script will
+- load in situ density data for each site
+- load the corresponding CFM simulation output for each physical densification scheme
+- interpolate the model density to the in situ depth grid
+- calculate the mean model density across all time steps in the austral summers of 2014 and 2015
+- and plot the difference between the model and in situ density profiles with depth.
+
+The resulting plots will be saved to the specified figure path.
+
 """
 
 import matplotlib.pyplot as plt

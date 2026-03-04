@@ -64,7 +64,7 @@ RACMO_additional_vars:
 spin_end_year: 1989 #spin date end
 runid: -9999 
 rho_bottom: 910 # density at bottom boundary condition
-sublim_sf: -1 #sublimation scaling factor, -1 for MERRA2 data, not sure for MAR data but think also -1
+sublim_sf: -1 #sublimation scaling factor, -1 for MERRA2 data, not sure for MAR data but think also -1, -1 for RACMO
 
 ## config for CFM_main, will be saved as json in output folder
 cfm_config:

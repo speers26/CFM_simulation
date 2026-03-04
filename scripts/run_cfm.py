@@ -33,6 +33,9 @@ if __name__ == "__main__":
     parser.add_argument(
         "--rcm", type=str, help="RCM name to use for forcing data (e.g., MAR or RACMO)"
     )
+    parser.add_argument(
+        "--liquid", type=str, help="Meltwater scheme to use (currently only bucket)"
+    )
 
     args = parser.parse_args()
 
@@ -41,19 +44,22 @@ if __name__ == "__main__":
         and args.lon is not None
         and args.physrho is not None
         and args.rcm is not None
+        and args.liquid is not None
     ):
         borehole_lat = args.lat
         borehole_lon = args.lon
         physRho = args.physrho
         rcm_name = args.rcm
+        liquid = args.liquid
         logging.info(
-            f"Using command line arguments: lat={borehole_lat}, lon={borehole_lon}, physrho={physRho}, rcm={rcm_name}"
+            f"Using command line arguments: lat={borehole_lat}, lon={borehole_lon}, physrho={physRho}, rcm={rcm_name}, liquid={liquid}"
         )
     else:
         borehole_lat = config["borehole_lat"]
         borehole_lon = config["borehole_lon"]
         rcm_name = config["rcm_name"]
         physRho = config["cfm_config"]["physRho"]
+        liquid = config["cfm_config"]["liquid"]
         logging.info("Using borehole location and physrho from config.yaml")
 
     if rcm_name == "MAR":
@@ -66,4 +72,4 @@ if __name__ == "__main__":
         )
         exit(1)
 
-    CFMRun(borehole_lat, borehole_lon, physRho, rcm_name).run()
+    CFMRun(borehole_lat, borehole_lon, physRho, rcm_name, liquid).run()
