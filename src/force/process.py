@@ -245,7 +245,7 @@ class ProcessRACMO(ProcessBase):
             year_files = [
                 f"{config['RACMO_data_path']}/{file}"
                 for file in all_files
-                if str(year) in file
+                if f'{year}0101-' in file
             ]
             if year_files:
                 datasets.append(self._read_data_by_year_all_vars(year_files))
@@ -312,7 +312,7 @@ class ProcessRACMO(ProcessBase):
         # rename columns to match CFM input column names
         mapping = config["RACMO_to_CFM_column_map"]
         borehole_df.rename(columns=mapping, inplace=True)
-        borehole_df.set_index("TIME", inplace=True)
+        borehole_df.set_index("time", inplace=True)
 
         # drop unneeded columns
         borehole_df = borehole_df[list(mapping.values())]
