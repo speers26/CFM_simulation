@@ -245,7 +245,7 @@ class ProcessRACMO(ProcessBase):
             year_files = [
                 f"{config['RACMO_data_path']}/{file}"
                 for file in all_files
-                if f'{year}0101-' in file
+                if f"{year}0101-" in file
             ]
             if year_files:
                 datasets.append(self._read_data_by_year_all_vars(year_files))
