@@ -1,12 +1,10 @@
 #!/bin/bash
 
 # Define arrays of latitude/longitude pairs (same index = same location)
-# LATITUDES=(-66.403 -66.588 -67.000 -67.444 -67.500)
-# LONGITUDES=(-63.376 -63.212 -61.486 -64.953 -63.336)
-LATITUDES=(-67.108150 -68.300383 -68.394733 -68.394667 -67.564433)
-LONGITUDES=(-61.287483 -64.148500 -64.713083 -64.710167 -63.257333)
+LATITUDES=(-66.403 -66.588 -67.000 -67.444 -67.500)
+LONGITUDES=(-63.376 -63.212 -61.486 -64.953 -63.336)
 PHYSRHO_VALUES=("GSFC2020" "HLdynamic" "Crocus" "Barnola1991" "Ligtenberg2011")
-RCM_VALUES=("RACMO" "MAR")
+RCM_VALUE="RACMO" # or "MAR"
 LIQUID_VALUE="bucket"
 
 # Counters for tracking results
