@@ -64,7 +64,9 @@ if __name__ == "__main__":
         for physrho in physrho_values:
             # load simulation
             output_path = f"{config['CFM_data_path']}/cfm_output/CFMoutput_{lat}_{lon}_{start}_{end}_{physrho}_{melt_scheme}_{rcm_name}/CFMresults.hdf5"
-            with xr.open_dataset(output_path, engine="h5netcdf", phony_dims="sort") as ds:
+            with xr.open_dataset(
+                output_path, engine="h5netcdf", phony_dims="sort"
+            ) as ds:
                 results_dict = {
                     "model_time_matrix": ds["density"][1:, 0],
                     "model_time_vector": ds["DIP"][1:, 0],
