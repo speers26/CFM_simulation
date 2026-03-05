@@ -56,10 +56,9 @@ if __name__ == "__main__":
         )  # Assuming 'TIME' is the time column
 
         for var in variables_to_plot:
-
             # get monthly moving average for smoother plots
             mar_data[var] = mar_data[var].rolling(window=30, center=True).mean()
-            racmo_data[var] = racmo_data[var].rolling(window=30, center=True).mean()            
+            racmo_data[var] = racmo_data[var].rolling(window=30, center=True).mean()
 
             plt.figure(figsize=(10, 6))
             plt.plot(
