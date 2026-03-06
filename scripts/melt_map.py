@@ -12,7 +12,6 @@ with open("config.yaml", "r") as f:
     config = yaml.safe_load(f)
 
 if __name__ == "__main__":
-
     if config["rcm_name"] == "MAR":
         melt = MeltMAR()
     elif config["rcm_name"] == "RACMO":
