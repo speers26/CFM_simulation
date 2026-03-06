@@ -6,7 +6,7 @@ Usage:
 
 """
 
-#TODO script needs changing to read in melt maps that have already been calculated by the MeltMAR and MeltRACMO classes,
+# TODO script needs changing to read in melt maps that have already been calculated by the MeltMAR and MeltRACMO classes,
 # rather than re-calculating the melt maps from the raw RCM data.
 
 import matplotlib.pyplot as plt
