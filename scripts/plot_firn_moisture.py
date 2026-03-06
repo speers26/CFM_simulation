@@ -108,7 +108,7 @@ if __name__ == "__main__":
             }
         )
 
-    melt_ds["melt_avg"].plot(cmap="Blues")
+    melt_ds["melt_avg"].plot(cmap="Blues", cbar_kwargs={"label": "Average Yearly Melt (mm w.e.)"})
     # add points showing borehole locations
     for site, (lat, lon) in borehole_sites.items():
         # Find nearest grid point
