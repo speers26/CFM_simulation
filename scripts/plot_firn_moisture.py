@@ -22,7 +22,7 @@ with open("config.yaml", "r") as f:
 
 if __name__ == "__main__":
     borehole_sites: Dict[str, Tuple[float, float]] = config["borehole_sites"]
-    rcm_name: str = "MAR"  # config["rcm_name"]
+    rcm_name: str = config["rcm_name"]
 
     # Load the RCM data for the entire AIS over the entire time period
     # to save memory, we will load in the data for each time chunk, calculate the yearly sums of melt, and then add to a running total of the yearly sums of melt for the entire time period
@@ -40,6 +40,14 @@ if __name__ == "__main__":
         "MAR": "TIME",
         "RACMO": "time",
     }  # variable name for time in the RCM data
+    lat_name: Dict[str, str] = {
+        "MAR": "LAT",
+        "RACMO": "lat",
+    }  # variable name for latitude in the RCM data
+    lon_name: Dict[str, str] = {
+        "MAR": "LON",
+        "RACMO": "lon",
+    }  # variable name for longitude in the RCM data
 
     for year in range(config["start_year"], config["end_year"] + 1):
         # find files in directory matching the pattern for this year
@@ -50,18 +58,20 @@ if __name__ == "__main__":
         ]
         if len(rcm_files) > 1:
             logging.warning(
-                f"Multiple files found for year {year} in {rcm_name} data directory. Using the first file found: {rcm_files[0]}"
+                f"Multiple files found for year {year} in {rcm_name} data directory. Check file reading pattern for rcm: {rcm_name}"
             )
 
+
         rcm_data = xr.open_dataset(f"{config[f'{rcm_name}_data_path']}/{rcm_files[0]}")
-        rcm_data = rcm_data.sel(SECTOR=config["sector"])
+        if rcm_name == "MAR":
+            rcm_data = rcm_data.sel(SECTOR=config["sector"])
 
         # restrict rcm_data to larsen C - find index ranges for faster slicing
-        lat_mask = (rcm_data["LAT"] >= config["larsenC_box"]["lat_min"]) & (
-            rcm_data["LAT"] <= config["larsenC_box"]["lat_max"]
+        lat_mask = (rcm_data[lat_name[rcm_name]] >= config["larsenC_box"]["lat_min"]) & (
+            rcm_data[lat_name[rcm_name]] <= config["larsenC_box"]["lat_max"]
         )
-        lon_mask = (rcm_data["LON"] >= config["larsenC_box"]["lon_min"]) & (
-            rcm_data["LON"] <= config["larsenC_box"]["lon_max"]
+        lon_mask = (rcm_data[lon_name[rcm_name]] >= config["larsenC_box"]["lon_min"]) & (
+            rcm_data[lon_name[rcm_name]] <= config["larsenC_box"]["lon_max"]
         )
         combined_mask = lat_mask & lon_mask
 
@@ -104,11 +114,11 @@ if __name__ == "__main__":
         logging.info(f"Loaded and processed RCM data for year {year}")
 
     # Get coordinates of site locations in the RCM grid and plot melt map with site locations overlaid
-    lat_mask = (rcm_data["LAT"] >= config["larsenC_box"]["lat_min"]) & (
-        rcm_data["LAT"] <= config["larsenC_box"]["lat_max"]
+    lat_mask = (rcm_data[lat_name[rcm_name]] >= config["larsenC_box"]["lat_min"]) & (
+        rcm_data[lat_name[rcm_name]] <= config["larsenC_box"]["lat_max"]
     )
-    lon_mask = (rcm_data["LON"] >= config["larsenC_box"]["lon_min"]) & (
-        rcm_data["LON"] <= config["larsenC_box"]["lon_max"]
+    lon_mask = (rcm_data[lon_name[rcm_name]] >= config["larsenC_box"]["lon_min"]) & (
+        rcm_data[lon_name[rcm_name]] <= config["larsenC_box"]["lon_max"]
     )
     combined_mask = lat_mask & lon_mask
     y_dim = [d for d in rcm_data.dims if d.startswith("Y")][0]
