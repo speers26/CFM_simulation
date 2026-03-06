@@ -7,6 +7,7 @@ Usage:
 """
 
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 import xarray as xr
 import yaml
@@ -34,6 +35,23 @@ if __name__ == "__main__":
         rcm_file = rcm_file_pattern[rcm_name].format(year=year)
         rcm_data = xr.open_dataset(f"{config['MAR_data_path']}/{rcm_file}")
         rcm_data = rcm_data.sel(SECTOR=config["sector"])
+    
+        # restrict rcm_data to larsen C - find index ranges for faster slicing
+        lat_mask = (rcm_data["LAT"] >= config["larsenC_box"]["lat_min"]) & (rcm_data["LAT"] <= config["larsenC_box"]["lat_max"])
+        lon_mask = (rcm_data["LON"] >= config["larsenC_box"]["lon_min"]) & (rcm_data["LON"] <= config["larsenC_box"]["lon_max"])
+        combined_mask = lat_mask & lon_mask
+        
+        # Find the grid dimension names
+        y_dim = [d for d in rcm_data.dims if d.startswith('Y')][0]
+        x_dim = [d for d in rcm_data.dims if d.startswith('X')][0]
+        
+        # Get the index ranges where the mask is True
+        y_indices = combined_mask.any(dim=x_dim).values.nonzero()[0]
+        x_indices = combined_mask.any(dim=y_dim).values.nonzero()[0]
+        
+        if len(y_indices) > 0 and len(x_indices) > 0:
+            rcm_data = rcm_data.isel({y_dim: slice(y_indices.min(), y_indices.max() + 1),
+                                       x_dim: slice(x_indices.min(), x_indices.max() + 1)})
 
         # Aggregate daily melt to a single annual total per grid cell.
         rcm_data[time_name[rcm_name]] = pd.to_datetime(
@@ -57,7 +75,41 @@ if __name__ == "__main__":
 
         logging.info(f"Loaded and processed RCM data for year {year}")
 
-    melt_ds["melt_avg"].plot()
+    # Load reference file to get LAT/LON grid for mapping borehole locations
+    ref_file = rcm_file_pattern[rcm_name].format(year=config["start_year"])
+    ref_data = xr.open_dataset(f"{config['MAR_data_path']}/{ref_file}")
+    ref_data = ref_data.sel(SECTOR=config["sector"])
+    
+    # Apply same Larsen C subsetting
+    lat_mask = (ref_data["LAT"] >= config["larsenC_box"]["lat_min"]) & (ref_data["LAT"] <= config["larsenC_box"]["lat_max"])
+    lon_mask = (ref_data["LON"] >= config["larsenC_box"]["lon_min"]) & (ref_data["LON"] <= config["larsenC_box"]["lon_max"])
+    combined_mask = lat_mask & lon_mask
+    y_dim = [d for d in ref_data.dims if d.startswith('Y')][0]
+    x_dim = [d for d in ref_data.dims if d.startswith('X')][0]
+    y_indices = combined_mask.any(dim=x_dim).values.nonzero()[0]
+    x_indices = combined_mask.any(dim=y_dim).values.nonzero()[0]
+    if len(y_indices) > 0 and len(x_indices) > 0:
+        ref_data = ref_data.isel({y_dim: slice(y_indices.min(), y_indices.max() + 1),
+                                   x_dim: slice(x_indices.min(), x_indices.max() + 1)})
+
+    melt_ds["melt_avg"].plot(cmap="Blues")
+    # add points showing borehole locations
+    for site, (lat, lon) in borehole_sites.items():
+        # Find nearest grid point
+        lat_diff = np.abs(ref_data["LAT"] - lat)
+        lon_diff = np.abs(ref_data["LON"] - lon)
+        distance = np.sqrt(lat_diff**2 + lon_diff**2)
+        y_idx, x_idx = np.unravel_index(distance.argmin().values, distance.shape)
+        
+        # Get the grid coordinates (X18_215, Y15_176)
+        x_coord = ref_data[x_dim].values[x_idx]
+        y_coord = ref_data[y_dim].values[y_idx]
+        
+        plt.plot(x_coord, y_coord, marker="o", markersize=5, label=site)
+    plt.legend()
+    plt.title(f"Average Yearly Melt from {rcm_name} ({config['start_year']} - {config['end_year']})")
+    plt.xlabel("x (m)")
+    plt.ylabel("y (m)")
     plt.savefig(
         f"{config['CFM_data_path']}/cfm_figures/melt_maps/melt_avg_{rcm_name}_{config['start_year']}_{config['end_year']}.png"
     )

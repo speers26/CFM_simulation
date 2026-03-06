@@ -25,11 +25,12 @@ borehole_sites:
   WI-0: [-67.444, -64.953]
   WI-70: [-67.500, -63.336]
 
+# bounding box for larsenC area
 larsenC_box:
-  lat_min: -66.0
-  lat_max: -65.0
-  lon_min: -65.0
-  lon_max: -63.0
+  lat_min: -75.0
+  lat_max: -63.0
+  lon_min: -75.0
+  lon_max: -55.0
 
 # RCM name to use for forcing data (e.g., MAR or RACMO)
 rcm_name: RACMO
