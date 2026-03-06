@@ -61,18 +61,17 @@ if __name__ == "__main__":
                 f"Multiple files found for year {year} in {rcm_name} data directory. Check file reading pattern for rcm: {rcm_name}"
             )
 
-
         rcm_data = xr.open_dataset(f"{config[f'{rcm_name}_data_path']}/{rcm_files[0]}")
         if rcm_name == "MAR":
             rcm_data = rcm_data.sel(SECTOR=config["sector"])
 
         # restrict rcm_data to larsen C - find index ranges for faster slicing
-        lat_mask = (rcm_data[lat_name[rcm_name]] >= config["larsenC_box"]["lat_min"]) & (
-            rcm_data[lat_name[rcm_name]] <= config["larsenC_box"]["lat_max"]
-        )
-        lon_mask = (rcm_data[lon_name[rcm_name]] >= config["larsenC_box"]["lon_min"]) & (
-            rcm_data[lon_name[rcm_name]] <= config["larsenC_box"]["lon_max"]
-        )
+        lat_mask = (
+            rcm_data[lat_name[rcm_name]] >= config["larsenC_box"]["lat_min"]
+        ) & (rcm_data[lat_name[rcm_name]] <= config["larsenC_box"]["lat_max"])
+        lon_mask = (
+            rcm_data[lon_name[rcm_name]] >= config["larsenC_box"]["lon_min"]
+        ) & (rcm_data[lon_name[rcm_name]] <= config["larsenC_box"]["lon_max"])
         combined_mask = lat_mask & lon_mask
 
         # Find the grid dimension names
