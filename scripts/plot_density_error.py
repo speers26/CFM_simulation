@@ -54,9 +54,7 @@ if __name__ == "__main__":
 
     for site, (lat, lon) in borehole_sites.items():
         # load in in situ density data for this site
-        in_situ_path = (
-            f"/home/speersm/luna/CPOM/speersm/in_situ/{site}_depth-density.csv"
-        )
+        in_situ_path = f"/home/speersm/luna/CPOM/speersm/in_situ/{site}_depth-density.csv"
         in_situ_data = pd.read_csv(in_situ_path)
         in_situ_data = in_situ_data.iloc[1:]
 
@@ -68,9 +66,7 @@ if __name__ == "__main__":
         for physrho in physrho_values:
             # load simulation
             output_path = f"{config['CFM_data_path']}/cfm_output/CFMoutput_{lat}_{lon}_{start}_{end}_{physrho}_{melt_scheme}_{rcm_name}/CFMresults.hdf5"
-            with xr.open_dataset(
-                output_path, engine="h5netcdf", phony_dims="sort"
-            ) as ds:
+            with xr.open_dataset(output_path, engine="h5netcdf", phony_dims="sort") as ds:
                 results_dict = {
                     "model_time_matrix": ds["density"][1:, 0],
                     "model_time_vector": ds["DIP"][1:, 0],
@@ -93,14 +89,10 @@ if __name__ == "__main__":
             density_summer = results_dict["density"][summer_mask, :]
 
             # only keep model data from depths where we have in situ data
-            depth_mask = (results_dict["depth"] >= in_situ_depth.min()) & (
-                results_dict["depth"] <= in_situ_depth.max()
-            )
+            depth_mask = (results_dict["depth"] >= in_situ_depth.min()) & (results_dict["depth"] <= in_situ_depth.max())
 
             # interpolate in model data to in situ depth grid
-            density_summer_interp = np.empty(
-                (density_summer.shape[0], len(in_situ_depth))
-            )
+            density_summer_interp = np.empty((density_summer.shape[0], len(in_situ_depth)))
             for i in range(density_summer.shape[0]):
                 density_summer_interp[i, :] = np.interp(
                     in_situ_depth,

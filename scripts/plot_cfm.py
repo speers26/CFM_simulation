@@ -17,9 +17,7 @@ with open("config.yaml", "r") as file:
     config = yaml.safe_load(file)
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Run CFM plotting with optional command line arguments"
-    )
+    parser = argparse.ArgumentParser(description="Run CFM plotting with optional command line arguments")
     parser.add_argument("--lat", type=float, help="Borehole latitude")
     parser.add_argument("--lon", type=float, help="Borehole longitude")
     parser.add_argument(

@@ -72,9 +72,7 @@ class CFMRun:
 
         if not os.path.exists(self._cfm_config["resultsFolder"]):
             os.makedirs(self._cfm_config["resultsFolder"])
-            logging.info(
-                f"CFM output will be saved to {self._cfm_config['resultsFolder']}."
-            )
+            logging.info(f"CFM output will be saved to {self._cfm_config['resultsFolder']}.")
         else:
             logging.info(
                 f"CFM output path exists at {self._cfm_config['resultsFolder']}. Delete this folder to rerun simulation."
@@ -110,18 +108,16 @@ class CFMRun:
 
         # format the CFM forcing data (including creating the spin up)
         # climateTS is a dictionary with the various climate fields needed, in the correct units.
-        climateTS, StpsPerYr, depth_S1, depth_S2, grid_bottom, SEBfluxes = (
-            makeSpinFiles(
-                self._force_data,
-                timeres=self._cfm_config["DFresample"],
-                Tinterp="mean",
-                spin_date_st=config["start_year"],
-                spin_date_end=config["spin_end_year"],
-                melt=self._cfm_config["MELT"],
-                desired_depth=None,
-                SEB=self._cfm_config["SEB"],
-                rho_bottom=config["rho_bottom"],
-            )
+        climateTS, StpsPerYr, depth_S1, depth_S2, grid_bottom, SEBfluxes = makeSpinFiles(
+            self._force_data,
+            timeres=self._cfm_config["DFresample"],
+            Tinterp="mean",
+            spin_date_st=config["start_year"],
+            spin_date_end=config["spin_end_year"],
+            melt=self._cfm_config["MELT"],
+            desired_depth=None,
+            SEB=self._cfm_config["SEB"],
+            rho_bottom=config["rho_bottom"],
         )
         climateTS["SUBLIM"] = (
             config["sublim_sf"] * climateTS["SUBLIM"]
@@ -134,9 +130,7 @@ class CFMRun:
         self._cfm_config["grid1bottom"] = float("%.1f" % (depth_S1))
         self._cfm_config["grid2bottom"] = float("%.1f" % (depth_S2))
         self._cfm_config["HbaseSpin"] = float("%.1f" % (3000 - grid_bottom))
-        self._cfm_config["DIPhorizon"] = np.floor(
-            0.8 * grid_bottom
-        )  # firn air content, depth integrated porosity
+        self._cfm_config["DIPhorizon"] = np.floor(0.8 * grid_bottom)  # firn air content, depth integrated porosity
         self._cfm_config["keep_firnthickness"] = True
         self._cfm_config["grid_outputs"] = True
 
@@ -145,11 +139,7 @@ class CFMRun:
             f"{self._cfm_output_path}/{self._json_config_name}",
             "w",
         ) as fp:
-            fp.write(
-                json.dumps(
-                    self._cfm_config, sort_keys=False, indent=4, separators=(",", ": ")
-                )
-            )
+            fp.write(json.dumps(self._cfm_config, sort_keys=False, indent=4, separators=(",", ": ")))
 
         ### Create CFM instance by passing config file and forcing data, then run the model
         firn = FirnDensityNoSpin(

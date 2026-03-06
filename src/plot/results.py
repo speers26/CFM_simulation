@@ -55,9 +55,7 @@ class ResultsPlotter:
         This function will call the internal functions to load the data and create the plots, and can be called from an external script or notebook to generate the figures.
         """
 
-        logging.info(
-            f"Plotting results for lat={self.lat}, lon={self.lon}, phys_rho={self.phys_rho}"
-        )
+        logging.info(f"Plotting results for lat={self.lat}, lon={self.lon}, phys_rho={self.phys_rho}")
         logging.info(f"Figures will be saved to: {self._figure_path}")
 
         logging.info("Loading data...")
@@ -66,9 +64,7 @@ class ResultsPlotter:
         logging.info("Data loaded, now plotting DIP time series...")
         self._plot_DIP_time_series()
 
-        logging.info(
-            "DIP time series plotted, now plotting change in firn thickness..."
-        )
+        logging.info("DIP time series plotted, now plotting change in firn thickness...")
         self._plot_firn_thickness_change()
 
         logging.info("DIP time series plotted, now plotting density profiles...")
@@ -80,9 +76,7 @@ class ResultsPlotter:
         """
 
         for phys_rho, output_path in zip(self.phys_rho, self._output_paths):
-            with xr.open_dataset(
-                f"{output_path}/CFMresults.hdf5", engine="h5netcdf", phony_dims="sort"
-            ) as ds:
+            with xr.open_dataset(f"{output_path}/CFMresults.hdf5", engine="h5netcdf", phony_dims="sort") as ds:
                 self._results_dicts[phys_rho] = {
                     "model_time_matrix": ds["density"][1:, 0],
                     "model_time_vector": ds["DIP"][1:, 0],
@@ -153,9 +147,7 @@ class ResultsPlotter:
                 label=f"{phys_rho}",
             )
 
-        plt.xlim(
-            self._thickness_change_range
-        )  # Set x-axis limits to the specified range
+        plt.xlim(self._thickness_change_range)  # Set x-axis limits to the specified range
         plt.xlabel("Model Time (years)")
         plt.ylabel("Change in Firn Thickness (m)")
         plt.title("Change in Firn Thickness over Time")

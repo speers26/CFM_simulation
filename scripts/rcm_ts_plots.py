@@ -31,11 +31,15 @@ if __name__ == "__main__":
 
     for site, (lat, lon) in borehole_sites.items():
         # Load MAR data for this site
-        mar_data_path = f"{config['CFM_data_path']}/cfm_input/MAR_{lat}_{lon}_{config['start_year']}_{config['end_year']}.csv"
+        mar_data_path = (
+            f"{config['CFM_data_path']}/cfm_input/MAR_{lat}_{lon}_{config['start_year']}_{config['end_year']}.csv"
+        )
         mar_data_dict[site] = pd.read_csv(mar_data_path)
 
         # Load RACMO data for this site
-        racmo_data_path = f"{config['CFM_data_path']}/cfm_input/RACMO_{lat}_{lon}_{config['start_year']}_{config['end_year']}.csv"
+        racmo_data_path = (
+            f"{config['CFM_data_path']}/cfm_input/RACMO_{lat}_{lon}_{config['start_year']}_{config['end_year']}.csv"
+        )
         racmo_data_dict[site] = pd.read_csv(racmo_data_path)
 
     save_dir = f"{config['CFM_data_path']}/cfm_figures/rcm_comp"
@@ -47,9 +51,7 @@ if __name__ == "__main__":
         racmo_data = racmo_data_dict[site]
 
         # Example variables to plot (these should match the columns in your data)
-        variables_to_plot = mar_data.columns.difference(
-            ["TIME"]
-        )  # Assuming 'TIME' is the time column
+        variables_to_plot = mar_data.columns.difference(["TIME"])  # Assuming 'TIME' is the time column
 
         for var in variables_to_plot:
             # get monthly moving average for smoother plots
@@ -57,9 +59,7 @@ if __name__ == "__main__":
             racmo_data[var] = racmo_data[var].rolling(window=30, center=True).mean()
 
             plt.figure(figsize=(10, 6))
-            plt.plot(
-                mar_data[var], label="MAR", color="blue", linestyle="--", alpha=0.5
-            )
+            plt.plot(mar_data[var], label="MAR", color="blue", linestyle="--", alpha=0.5)
             plt.plot(
                 racmo_data[var],
                 label="RACMO",
@@ -76,6 +76,4 @@ if __name__ == "__main__":
             plt.savefig(f"{save_dir}/{site}_{var}_timeseries.png")
             plt.close()
 
-            logging.info(
-                f"Saved time series plot for {var} at {site} to {save_dir}/{site}_{var}_timeseries.png"
-            )
+            logging.info(f"Saved time series plot for {var} at {site} to {save_dir}/{site}_{var}_timeseries.png")

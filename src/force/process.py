@@ -16,8 +16,8 @@ logging.basicConfig(level=logging.INFO)
 
 class ProcessBase(ABC):
     def __init__(self, borehole_lat: float, borehole_lon: float) -> None:
-        """Base class for processing data at specified borehole coordinates. Subclasses should implement the process method
-        to read in and process data to their relevant save directory.
+        """Base class for processing data at specified borehole coordinates. Subclasses should implement the process
+        method to read in and process data to their relevant save directory.
 
         Args:
             borehole_lat (float): Latitude of borehole location.
@@ -41,9 +41,7 @@ class ProcessBase(ABC):
         """
 
         if os.path.exists(save_path):
-            logging.info(
-                f"Processed RCM data already exists at {save_path}. Skipping processing."
-            )
+            logging.info(f"Processed RCM data already exists at {save_path}. Skipping processing.")
 
         else:
             logging.info("Reading RCM data...")
@@ -51,9 +49,7 @@ class ProcessBase(ABC):
             logging.info("...RCM data read successfully.")
 
             logging.info("Processing borehole data...")
-            borehole_dataframes = [
-                self._xr_to_input_dataframe(xr_data) for xr_data in self._daily_xr
-            ]
+            borehole_dataframes = [self._xr_to_input_dataframe(xr_data) for xr_data in self._daily_xr]
             self._input_dataframe = pd.concat(borehole_dataframes)
             logging.info("...borehole data processed successfully.")
 
@@ -74,7 +70,8 @@ class ProcessBase(ABC):
 
 class ProcessMAR(ProcessBase):
     def __init__(self, borehole_lat: float, borehole_lon: float) -> None:
-        """Initialize with daily MAR dataset at specified borehole coordinates. Reads in .nc files from MAR data path specified in config.
+        """Initialize with daily MAR dataset at specified borehole coordinates. Reads in .nc files from MAR data path
+        specified in config.
 
         Args:
             borehole_lat (float): Latitude of borehole location.
@@ -122,7 +119,8 @@ class ProcessMAR(ProcessBase):
 
     def _xr_to_input_dataframe(self, xr_data: xr.Dataset) -> pd.DataFrame:
         """
-        Extract daily data for borehole location, then convert the borehole MAR data to the pandas DataFrame needed for CFM input. Also only takes the sector specified in config.
+        Extract daily data for borehole location, then convert the borehole MAR data to the pandas DataFrame needed for
+        CFM input. Also only takes the sector specified in config.
 
         Args:
             xr_data (xr.Dataset): MAR data at the borehole location.
@@ -140,16 +138,10 @@ class ProcessMAR(ProcessBase):
         # find coordinate names for X/Y (prefer MAR defaults, fallback to X/Y)
         x_coord_candidates = ["X18_215", "X"]
         y_coord_candidates = ["Y15_176", "Y"]
-        x_coord = next(
-            (name for name in x_coord_candidates if name in xr_data.coords), None
-        )
-        y_coord = next(
-            (name for name in y_coord_candidates if name in xr_data.coords), None
-        )
+        x_coord = next((name for name in x_coord_candidates if name in xr_data.coords), None)
+        y_coord = next((name for name in y_coord_candidates if name in xr_data.coords), None)
         if x_coord is None or y_coord is None:
-            raise ValueError(
-                f"Could not find appropriate X/Y coordinate names. Found coords: {list(xr_data.coords)}"
-            )
+            raise ValueError(f"Could not find appropriate X/Y coordinate names. Found coords: {list(xr_data.coords)}")
         logging.info(
             "Using coordinates: %s for x and %s for y for year %s",
             x_coord,
@@ -168,9 +160,7 @@ class ProcessMAR(ProcessBase):
         vars_to_include = list(mapping.keys())
 
         # drop any variables not in vars_to_include
-        borehole_data = borehole_data.drop_vars(
-            [var for var in borehole_data.data_vars if var not in vars_to_include]
-        )
+        borehole_data = borehole_data.drop_vars([var for var in borehole_data.data_vars if var not in vars_to_include])
 
         # convert to dataframe
         borehole_df = borehole_data.to_dataframe().reset_index()
@@ -197,7 +187,8 @@ class ProcessMAR(ProcessBase):
 
 class ProcessRACMO(ProcessBase):
     def __init__(self, borehole_lat: float, borehole_lon: float) -> None:
-        """Initialize with daily RACMO dataset at specified borehole coordinates. Reads in .nc files from RACMO data path
+        """Initialize with daily RACMO dataset at specified borehole coordinates. Reads in .nc files from RACMO data
+        path
         specified in config.
 
         Args:
@@ -230,8 +221,8 @@ class ProcessRACMO(ProcessBase):
         super().process(self._save_path)
 
     def _read_data(self) -> List[xr.Dataset]:
-        """Read in the RACMO .nc files from the specified data path in config, filtering for files which contain the variables we
-        want to read and which contain a year between start and end year in config.
+        """Read in the RACMO .nc files from the specified data path in config, filtering for files which contain the
+        variables we want to read and which contain a year between start and end year in config.
 
         Returns:
             List[xr.Dataset]: List of xarray Datasets for each batch of years of RACMO data
@@ -242,11 +233,7 @@ class ProcessRACMO(ProcessBase):
         datasets = []
 
         for year in range(config["start_year"], config["end_year"] + 1):
-            year_files = [
-                f"{config['RACMO_data_path']}/{file}"
-                for file in all_files
-                if f"{year}0101-" in file
-            ]
+            year_files = [f"{config['RACMO_data_path']}/{file}" for file in all_files if f"{year}0101-" in file]
             if year_files:
                 datasets.append(self._read_data_by_year_all_vars(year_files))
 
@@ -254,8 +241,8 @@ class ProcessRACMO(ProcessBase):
 
     def _read_data_by_year_all_vars(self, year_files: List[str]) -> xr.Dataset:
         """
-        For a given year, read all RACMO files containing any of the variables we want to read, then merge these into a single
-        xarray Dataset for that year.
+        For a given year, read all RACMO files containing any of the variables we want to read, then merge these into a
+        single xarray Dataset for that year.
 
         Args:
             year_files (List[str]): List of all files in the RACMO data directory with given year in name.
@@ -319,8 +306,7 @@ class ProcessRACMO(ProcessBase):
 
         # only keep dates in the time range
         borehole_df = borehole_df[
-            (borehole_df.index.year >= config["start_year"])
-            & (borehole_df.index.year <= config["end_year"])
+            (borehole_df.index.year >= config["start_year"]) & (borehole_df.index.year <= config["end_year"])
         ]
 
         # multiply all mass fluxes by 60*60*24 to convert from kg/m2/s to mmWE/day
