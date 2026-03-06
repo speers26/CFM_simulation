@@ -55,7 +55,7 @@ class MeltMAR(ProcessMAR):
         logging.info("Average yearly total melt calculated successfully.")
 
         # save the average yearly melt map to a netcdf file
-        avg_yearly_melt.to_netcdf(self._save_location + "/" + self._file_name, engine="h5netcdf", mode="w")
+        avg_yearly_melt.to_netcdf(self._save_location + "/" + self._file_name, engine="netcdf4", mode="w")
         logging.info(f"Average yearly total melt saved to {self._save_location}/{self._file_name}")
 
 
@@ -110,5 +110,5 @@ class MeltRACMO(ProcessRACMO):
         avg_yearly_melt = avg_yearly_melt.compute()
 
         # save the average yearly melt map to a netcdf file with compression
-        avg_yearly_melt.to_netcdf(self._save_location + "/" + self._file_name, engine="h5netcdf", mode="w")
+        avg_yearly_melt.to_netcdf(self._save_location + "/" + self._file_name, engine="netcdf4", mode="w")
         logging.info(f"Average yearly total melt saved to {self._save_location}/{self._file_name}")
