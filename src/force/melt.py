@@ -35,9 +35,6 @@ class MeltMAR(ProcessMAR):
     def get_melt_map(self) -> None:
         """Get the average yearly total melt across the AIS for MAR. This method will load in the MAR data for the entire
         AIS, calculate the yearly sums of melt, and then average these yearly sums to get a single spatial map of how 'wet' firn is across the AIS.
-
-        Returns:
-            xr.DataArray: A spatial map of the average yearly total melt across the AIS.
         """
 
         logging.info("Reading in MAR data for the entire AIS over the entire time period...")
@@ -87,8 +84,6 @@ class MeltRACMO(ProcessRACMO):
         This method will load in the RACMO data for the entire AIS, calculate
         the yearly sums of melt, and then average these yearly sums to get a
         single spatial map of how 'wet' firn is across the AIS.
-        Returns:
-            xr.DataArray: A spatial map of the average yearly total melt across the AIS.
         """
 
         logging.info("Reading in RACMO data for the entire AIS over the entire time period...")
@@ -115,5 +110,5 @@ class MeltRACMO(ProcessRACMO):
         avg_yearly_melt = avg_yearly_melt.compute()
 
         # save the average yearly melt map to a netcdf file with compression
-        avg_yearly_melt.to_netcdf(self._save_location + "/" + self._file_name, engine="scipy", mode="w")
+        avg_yearly_melt.to_netcdf(self._save_location + "/" + self._file_name, engine="h5netcdf", mode="w")
         logging.info(f"Average yearly total melt saved to {self._save_location}/{self._file_name}")
