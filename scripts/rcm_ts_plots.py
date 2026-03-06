@@ -25,7 +25,6 @@ with open("config.yaml", "r") as f:
     config = yaml.safe_load(f)
 
 if __name__ == "__main__":
-
     borehole_sites: Dict[str, Tuple[float, float]] = config["borehole_sites"]
     mar_data_dict: Dict[str, pd.DataFrame] = {}
     racmo_data_dict: Dict[str, pd.DataFrame] = {}
