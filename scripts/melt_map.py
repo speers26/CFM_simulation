@@ -12,6 +12,5 @@ with open("config.yaml", "r") as f:
     config = yaml.safe_load(f)
 
 if __name__ == "__main__":
-
     MeltMAR().get_melt_map()
     MeltRACMO().get_melt_map()
