@@ -16,7 +16,7 @@ with open("config.yaml", "r") as f:
 class MeltMAR(ProcessMAR):
     """Class to find the average yearly total melt across the AIS for MAR
 
-    Inherits from ProcessMar so that it can use the _read_data method.
+    Inherits from ProcessMAR so that it can use the _read_data method.
     """
 
     def __init__(self, borehole_lat: float = 0.0, borehole_lon: float = 0.0) -> None:
@@ -82,8 +82,11 @@ class MeltRACMO(ProcessRACMO):
         os.makedirs(self._save_location, exist_ok=True)
 
     def get_melt_map(self) -> None:
-        """Get the average yearly total melt across the AIS for RACMO. This method will load in the RACMO data for the entire AIS, calculate the yearly sums of melt, and then average these yearly sums to get a single spatial map of how 'wet' firn is across the AIS.
+        """Get the average yearly total melt across the AIS for RACMO.
 
+        This method will load in the RACMO data for the entire AIS, calculate
+        the yearly sums of melt, and then average these yearly sums to get a
+        single spatial map of how 'wet' firn is across the AIS.
         Returns:
             xr.DataArray: A spatial map of the average yearly total melt across the AIS.
         """
