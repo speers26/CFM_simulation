@@ -5,6 +5,9 @@ Script to generate plots of time series for MAR and RACMO forcing data at specif
 - Overlay the time series for MAR and RACMO on the same plot for each variable to compare the two RCMs at each site.
 The resulting plots will be saved to the specified figure path.
 
+Usage:
+    python rcm_ts_plots.py
+
 """
 
 import os
@@ -22,14 +25,8 @@ with open("config.yaml", "r") as f:
     config = yaml.safe_load(f)
 
 if __name__ == "__main__":
-    borehole_sites: Dict[str, Tuple[float, float]] = {
-        "CI-0": (-66.403, -63.376),
-        "CI-22": (-66.588, -63.212),
-        "CI-120": (-67.000, -61.486),
-        "WI-0": (-67.444, -64.953),
-        "WI-70": (-67.500, -63.336),
-    }
 
+    borehole_sites: Dict[str, Tuple[float, float]] = config["borehole_sites"]
     mar_data_dict: Dict[str, pd.DataFrame] = {}
     racmo_data_dict: Dict[str, pd.DataFrame] = {}
 

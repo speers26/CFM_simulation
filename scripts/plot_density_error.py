@@ -31,14 +31,8 @@ with open("config.yaml", "r") as f:
     config = yaml.safe_load(f)
 
 if __name__ == "__main__":
-    borehole_sites: Dict[str, Tuple[float, float]] = {
-        "CI-0": (-66.403, -63.376),
-        "CI-22": (-66.588, -63.212),
-        "CI-120": (-67.000, -61.486),
-        "WI-0": (-67.444, -64.953),
-        "WI-70": (-67.500, -63.336),
-    }
 
+    borehole_sites: Dict[str, Tuple[float, float]] = config["borehole_sites"]
     physrho_values = [
         "GSFC2020",
         "HLdynamic",
@@ -46,10 +40,9 @@ if __name__ == "__main__":
         "Barnola1991",
         "Ligtenberg2011",
     ]
-    start, end = 1979, 2024
-
-    rcm_name = "RACMO"
-    melt_scheme = "bucket"
+    start, end = config["start_year"], config["end_year"]
+    rcm_name = config["rcm_name"]
+    melt_scheme = config["cfm_config"]["liquid"]
 
     summer_2014 = [
         2014 + 11 / 12,
