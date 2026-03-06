@@ -1,4 +1,4 @@
-"""Script which gets maps of average yearly melt across AIC (or Larsen C), for RCM specified in config
+"""Script which gets maps of average yearly melt across AIC (or Larsen C), for both MAR and RACMO.
 
 Usage:
     - python melt_map.py
@@ -12,11 +12,6 @@ with open("config.yaml", "r") as f:
     config = yaml.safe_load(f)
 
 if __name__ == "__main__":
-    if config["rcm_name"] == "MAR":
-        melt = MeltMAR()
-    elif config["rcm_name"] == "RACMO":
-        melt = MeltRACMO()
-    else:
-        raise ValueError(f"Invalid RCM name in config: {config['rcm_name']}. Must be 'MAR' or 'RACMO'.")
 
-    melt.get_melt_map()
+    MeltMAR().get_melt_map()
+    MeltRACMO().get_melt_map()
