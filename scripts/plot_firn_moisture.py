@@ -22,23 +22,36 @@ with open("config.yaml", "r") as f:
 
 if __name__ == "__main__":
     borehole_sites: Dict[str, Tuple[float, float]] = config["borehole_sites"]
-    rcm_name: str = "MAR"# config["rcm_name"]
+    rcm_name: str = "MAR"  # config["rcm_name"]
 
     # Load the RCM data for the entire AIS over the entire time period
     # to save memory, we will load in the data for each time chunk, calculate the yearly sums of melt, and then add to a running total of the yearly sums of melt for the entire time period
 
     melt_ds: xr.Dataset = None
-    rcm_file_pattern: Dict[str, str] = {"MAR": "MARv3.14.3-27.5km-daily-ERA5-",
-                                        "RACMO": "mltgl_ANT-12_ERA5_evaluation_r1i1p1f1_UU-IMAU_RACMO24P-NN_v1-r1_day_"}
-    melt_name: Dict[str, str] = {"MAR": "ME", "RACMO": "mltgl"}  # variable name for melt in the RCM data
-    time_name: Dict[str, str] = {"MAR": "TIME", "RACMO": "time"}  # variable name for time in the RCM data
+    rcm_file_pattern: Dict[str, str] = {
+        "MAR": "MARv3.14.3-27.5km-daily-ERA5-",
+        "RACMO": "mltgl_ANT-12_ERA5_evaluation_r1i1p1f1_UU-IMAU_RACMO24P-NN_v1-r1_day_",
+    }
+    melt_name: Dict[str, str] = {
+        "MAR": "ME",
+        "RACMO": "mltgl",
+    }  # variable name for melt in the RCM data
+    time_name: Dict[str, str] = {
+        "MAR": "TIME",
+        "RACMO": "time",
+    }  # variable name for time in the RCM data
 
     for year in range(config["start_year"], config["end_year"] + 1):
-
         # find files in directory matching the pattern for this year
-        rcm_files = [f for f in os.listdir(config[f"{rcm_name}_data_path"]) if f.startswith(f"{rcm_file_pattern[rcm_name]}{year}")]
+        rcm_files = [
+            f
+            for f in os.listdir(config[f"{rcm_name}_data_path"])
+            if f.startswith(f"{rcm_file_pattern[rcm_name]}{year}")
+        ]
         if len(rcm_files) > 1:
-            logging.warning(f"Multiple files found for year {year} in {rcm_name} data directory. Using the first file found: {rcm_files[0]}")
+            logging.warning(
+                f"Multiple files found for year {year} in {rcm_name} data directory. Using the first file found: {rcm_files[0]}"
+            )
 
         rcm_data = xr.open_dataset(f"{config[f'{rcm_name}_data_path']}/{rcm_files[0]}")
         rcm_data = rcm_data.sel(SECTOR=config["sector"])
