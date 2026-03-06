@@ -24,18 +24,12 @@ with open("config.yaml", "r") as file:
     config = yaml.safe_load(file)
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Run CFM simulation with optional command line arguments"
-    )
+    parser = argparse.ArgumentParser(description="Run CFM simulation with optional command line arguments")
     parser.add_argument("--lat", type=float, help="Borehole latitude")
     parser.add_argument("--lon", type=float, help="Borehole longitude")
     parser.add_argument("--physrho", type=str, help="Physical densification scheme")
-    parser.add_argument(
-        "--rcm", type=str, help="RCM name to use for forcing data (e.g., MAR or RACMO)"
-    )
-    parser.add_argument(
-        "--liquid", type=str, help="Meltwater scheme to use (currently only bucket)"
-    )
+    parser.add_argument("--rcm", type=str, help="RCM name to use for forcing data (e.g., MAR or RACMO)")
+    parser.add_argument("--liquid", type=str, help="Meltwater scheme to use (currently only bucket)")
 
     args = parser.parse_args()
 
@@ -67,9 +61,7 @@ if __name__ == "__main__":
     elif rcm_name == "RACMO":
         ProcessRACMO(borehole_lat, borehole_lon).process()
     else:
-        logging.error(
-            f"Invalid RCM name: {rcm_name}. Please choose either 'MAR' or 'RACMO'."
-        )
+        logging.error(f"Invalid RCM name: {rcm_name}. Please choose either 'MAR' or 'RACMO'.")
         exit(1)
 
     CFMRun(borehole_lat, borehole_lon, physRho, rcm_name, liquid).run()

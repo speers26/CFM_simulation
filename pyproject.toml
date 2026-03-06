@@ -16,6 +16,3 @@ where = ["src"]
 [tool.ruff]
 extend-exclude = ["*.ipynb", "notebooks/**"]
 line-length = 120
-
-[tool.ruff.lint]
-select = ["E501"]  # Enable line-too-long check

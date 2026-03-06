@@ -17,8 +17,6 @@ if __name__ == "__main__":
     elif config["rcm_name"] == "RACMO":
         melt = MeltRACMO()
     else:
-        raise ValueError(
-            f"Invalid RCM name in config: {config['rcm_name']}. Must be 'MAR' or 'RACMO'."
-        )
+        raise ValueError(f"Invalid RCM name in config: {config['rcm_name']}. Must be 'MAR' or 'RACMO'.")
 
     melt.get_melt_map()

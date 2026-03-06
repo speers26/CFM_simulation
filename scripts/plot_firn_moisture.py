@@ -66,12 +66,12 @@ if __name__ == "__main__":
             rcm_data = rcm_data.sel(SECTOR=config["sector"])
 
         # restrict rcm_data to larsen C - find index ranges for faster slicing
-        lat_mask = (
-            rcm_data[lat_name[rcm_name]] >= config["larsenC_box"]["lat_min"]
-        ) & (rcm_data[lat_name[rcm_name]] <= config["larsenC_box"]["lat_max"])
-        lon_mask = (
-            rcm_data[lon_name[rcm_name]] >= config["larsenC_box"]["lon_min"]
-        ) & (rcm_data[lon_name[rcm_name]] <= config["larsenC_box"]["lon_max"])
+        lat_mask = (rcm_data[lat_name[rcm_name]] >= config["larsenC_box"]["lat_min"]) & (
+            rcm_data[lat_name[rcm_name]] <= config["larsenC_box"]["lat_max"]
+        )
+        lon_mask = (rcm_data[lon_name[rcm_name]] >= config["larsenC_box"]["lon_min"]) & (
+            rcm_data[lon_name[rcm_name]] <= config["larsenC_box"]["lon_max"]
+        )
         combined_mask = lat_mask & lon_mask
 
         # Find the grid dimension names
@@ -91,12 +91,8 @@ if __name__ == "__main__":
             )
 
         # Aggregate daily melt to a single annual total per grid cell.
-        rcm_data[time_name[rcm_name]] = pd.to_datetime(
-            rcm_data[time_name[rcm_name]].values
-        )
-        melt_yearly_sum = (
-            rcm_data[melt_name[rcm_name]].resample({time_name[rcm_name]: "1YE"}).sum()
-        )
+        rcm_data[time_name[rcm_name]] = pd.to_datetime(rcm_data[time_name[rcm_name]].values)
+        melt_yearly_sum = rcm_data[melt_name[rcm_name]].resample({time_name[rcm_name]: "1YE"}).sum()
         melt_yearly_sum = melt_yearly_sum.sum(dim=time_name[rcm_name])
         if time_name[rcm_name] in melt_yearly_sum.coords:
             melt_yearly_sum = melt_yearly_sum.drop_vars(time_name[rcm_name])
@@ -106,9 +102,7 @@ if __name__ == "__main__":
         else:
             melt_ds["melt_sum"] = melt_ds["melt_sum"] + melt_yearly_sum
 
-        melt_ds["melt_avg"] = melt_ds["melt_sum"] / (
-            config["end_year"] - config["start_year"] + 1
-        )
+        melt_ds["melt_avg"] = melt_ds["melt_sum"] / (config["end_year"] - config["start_year"] + 1)
 
         logging.info(f"Loaded and processed RCM data for year {year}")
 
@@ -132,9 +126,7 @@ if __name__ == "__main__":
             }
         )
 
-    melt_ds["melt_avg"].plot(
-        cmap="Blues", cbar_kwargs={"label": "Average Yearly Melt (mm w.e.)"}
-    )
+    melt_ds["melt_avg"].plot(cmap="Blues", cbar_kwargs={"label": "Average Yearly Melt (mm w.e.)"})
     # add points showing borehole locations
     for site, (lat, lon) in borehole_sites.items():
         # Find nearest grid point
@@ -149,9 +141,7 @@ if __name__ == "__main__":
 
         plt.plot(x_coord, y_coord, marker="o", markersize=5, label=site)
     plt.legend()
-    plt.title(
-        f"Average Yearly Melt from {rcm_name} ({config['start_year']} - {config['end_year']})"
-    )
+    plt.title(f"Average Yearly Melt from {rcm_name} ({config['start_year']} - {config['end_year']})")
     plt.xlabel("x (m)")
     plt.ylabel("y (m)")
     plt.savefig(

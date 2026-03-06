@@ -27,9 +27,7 @@ class MeltMAR(ProcessMAR):
         """
         super().__init__(borehole_lat, borehole_lon)
 
-        self._save_location: str = (
-            f"{config['CFM_data_path']}/melt_maps/mar_avg_yearly_melt_map.nc"
-        )
+        self._save_location: str = f"{config['CFM_data_path']}/melt_maps/mar_avg_yearly_melt_map.nc"
 
     def get_melt_map(self) -> None:
         """Get the average yearly total melt across the AIS for MAR. This method will load in the MAR data for the entire AIS, calculate the yearly sums of melt, and then average these yearly sums to get a single spatial map of how 'wet' firn is across the AIS.
@@ -38,9 +36,7 @@ class MeltMAR(ProcessMAR):
             xr.DataArray: A spatial map of the average yearly total melt across the AIS.
         """
 
-        logging.info(
-            "Reading in MAR data for the entire AIS over the entire time period..."
-        )
+        logging.info("Reading in MAR data for the entire AIS over the entire time period...")
         # Load the MAR data for the entire AIS over the entire time period
         mar_ds = self._read_data()
         logging.info("MAR data loaded successfully.")
@@ -77,9 +73,7 @@ class MeltRACMO(ProcessRACMO):
         """
         super().__init__(borehole_lat, borehole_lon)
 
-        self._save_location: str = (
-            f"{config['CFM_data_path']}/melt_maps/racmo_avg_yearly_melt_map.nc"
-        )
+        self._save_location: str = f"{config['CFM_data_path']}/melt_maps/racmo_avg_yearly_melt_map.nc"
 
     def get_melt_map(self) -> None:
         """Get the average yearly total melt across the AIS for RACMO. This method will load in the RACMO data for the entire AIS, calculate the yearly sums of melt, and then average these yearly sums to get a single spatial map of how 'wet' firn is across the AIS.
@@ -88,9 +82,7 @@ class MeltRACMO(ProcessRACMO):
             xr.DataArray: A spatial map of the average yearly total melt across the AIS.
         """
 
-        logging.info(
-            "Reading in RACMO data for the entire AIS over the entire time period..."
-        )
+        logging.info("Reading in RACMO data for the entire AIS over the entire time period...")
         # Load the RACMO data for the entire AIS over the entire time period
         racmo_ds = self._read_data()
         logging.info("RACMO data loaded successfully.")
