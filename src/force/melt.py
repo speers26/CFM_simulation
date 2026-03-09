@@ -47,11 +47,13 @@ class MeltMAR(ProcessMAR):
         mar_ds = xr.concat(mar_ds, dim="TIME")
 
         # Calculate the yearly sums of melt
-        mar_ds["year"] = mar_ds["TIME"].dt.year
-        yearly_melt = mar_ds["ME"].resample({"TIME": "1YE"}).sum(dim="TIME")
+        yearly_melt = mar_ds["ME"].groupby("TIME.year").sum(dim="TIME")
 
         # Average these yearly sums to get a single spatial map of how 'wet' firn is across the AIS
-        avg_yearly_melt = yearly_melt.mean(dim="TIME")
+        avg_yearly_melt = yearly_melt.mean(dim="year")
+        
+        # Compute the data to force evaluation before saving
+        avg_yearly_melt = avg_yearly_melt.compute()
         logging.info("Average yearly total melt calculated successfully.")
 
         # save the average yearly melt map to a netcdf file
@@ -96,19 +98,18 @@ class MeltRACMO(ProcessRACMO):
         racmo_ds = xr.concat(racmo_ds, dim="time")
 
         # Calculate the yearly sums of melt
-        racmo_ds["year"] = racmo_ds["time"].dt.year
-        yearly_melt = racmo_ds["mltgl"].resample({"time": "1YE"}).sum(dim="time")
+        yearly_melt = racmo_ds["mltgl"].groupby("time.year").sum(dim="time")
 
         # Average these yearly sums to get a single spatial map of how 'wet' firn is across the AIS
-        avg_yearly_melt = yearly_melt.mean(dim="time")
+        avg_yearly_melt = yearly_melt.mean(dim="year")
 
         # multiply by 60*60*24 to account for the fact that original units of melt in RACMO are kg/m2/s, and we want to convert to kg/m2/day
         avg_yearly_melt = avg_yearly_melt * 60 * 60 * 24
-        logging.info("Average yearly total melt calculated successfully.")
 
         # Compute the data to force evaluation before saving
         avg_yearly_melt = avg_yearly_melt.compute()
+        logging.info("Average yearly total melt calculated successfully.")
 
-        # save the average yearly melt map to a netcdf file with compression
+        # save the average yearly melt map to a netcdf file
         avg_yearly_melt.to_netcdf(self._save_location + "/" + self._file_name, engine="netcdf4", mode="w")
         logging.info(f"Average yearly total melt saved to {self._save_location}/{self._file_name}")
