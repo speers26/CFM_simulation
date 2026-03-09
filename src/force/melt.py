@@ -51,7 +51,7 @@ class MeltMAR(ProcessMAR):
 
         # Average these yearly sums to get a single spatial map of how 'wet' firn is across the AIS
         avg_yearly_melt = yearly_melt.mean(dim="year")
-        
+
         # Compute the data to force evaluation before saving
         avg_yearly_melt = avg_yearly_melt.compute()
         logging.info("Average yearly total melt calculated successfully.")
