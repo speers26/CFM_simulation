@@ -1,7 +1,7 @@
 """Script which gets maps of average yearly melt across AIS (or Larsen C), for both MAR and RACMO.
 
 Usage:
-    - python melt_map.py
+    - python run_melt.py
 
 """
 

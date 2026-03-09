@@ -28,7 +28,7 @@ borehole_sites:
 # bounding box for larsenC area
 larsenC_box:
   lat_min: -75.0
-  lat_max: -65.5
+  lat_max: -63.5
   lon_min: -75.0
   lon_max: -55.0
 

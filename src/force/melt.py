@@ -52,6 +52,10 @@ class MeltMAR(ProcessMAR):
         # Average these yearly sums to get a single spatial map of how 'wet' firn is across the AIS
         avg_yearly_melt = yearly_melt.mean(dim="year")
 
+        # add back in LON LAT variables to the avg_yearly_melt DataArray, as these are needed for plotting later
+        # only use LON LAT variables from a single time step, as these don't change over time
+        avg_yearly_melt = avg_yearly_melt.assign_coords(LON=mar_ds["LON"].isel(TIME=0), LAT=mar_ds["LAT"].isel(TIME=0))
+
         # Compute the data to force evaluation before saving
         avg_yearly_melt = avg_yearly_melt.compute()
         logging.info("Average yearly total melt calculated successfully.")
