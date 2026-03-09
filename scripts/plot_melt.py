@@ -1,4 +1,4 @@
-""" Script to plot average yearly melt across the AIS peninsula for MAR and RACMO, with borehole locations overlaid. 
+"""Script to plot average yearly melt across the AIS peninsula for MAR and RACMO, with borehole locations overlaid.
 
 Calculates melt averaged over the period specified in config
 

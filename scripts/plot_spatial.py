@@ -1,4 +1,4 @@
-""" Script to plot spatial maps of variables from the RCM simulations, typically restricted to AIS peninsula.
+"""Script to plot spatial maps of variables from the RCM simulations, typically restricted to AIS peninsula.
 
 Usage:
     - plot_spatial.py
@@ -7,7 +7,6 @@ Usage:
 from plot import SpatialPlotter
 
 if __name__ == "__main__":
-
     rcm_name = "RACMO"  # or "MAR"
     variables = ["mltgl"]  # list of variable names to plot, e.g. "mltgl" for melt in MAR and RACMO
 

@@ -37,7 +37,7 @@ class SpatialPlotter:
         os.makedirs(self.save_dir, exist_ok=True)
 
     def plot(self) -> None:
-        """ Plots the spatial map of the specified variable(s) for the specified RCM and plot type. This method will
+        """Plots the spatial map of the specified variable(s) for the specified RCM and plot type. This method will
         read in the data, aggregate it according to the specified plot type, and then plot the spatial map.
         The resulting plot will be saved to the specified directory.
         """
