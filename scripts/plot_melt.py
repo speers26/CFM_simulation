@@ -22,7 +22,6 @@ def plot_larsen_c_melt(
         borehole_sites (Dict[str, Tuple[float, float]]): dictionary of borehole site names and their lat/lon coordinates to plot on the map
     """
 
-
     melt_ds = xr.open_dataarray(
         f"{config['CFM_data_path']}/melt/{rcm_name}_avg_yearly_melt_map_{config['start_year']}-{config['end_year']}.nc"
     )
