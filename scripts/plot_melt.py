@@ -37,7 +37,7 @@ def plot_larsen_c_melt(
 
     # plot the melt map
     plt.figure(figsize=(10, 8))
-    melt_ds.plot(x=lon_name, y=lat_name, cmap="Blues")
+    melt_ds.plot(x=lon_name, y=lat_name, cmap="Blues", vmax=1200)
     for site, (lat, lon) in borehole_sites.items():
         plt.plot(lon, lat, marker="o", markersize=5, label=site)
     plt.legend()
