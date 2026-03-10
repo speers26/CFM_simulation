@@ -215,3 +215,20 @@ cfm_config:
 
 ### ----------------- Plotting ----------------- ###
 thickness_change_range: [2000, 2000.25] # Range of model time to plot for change in firn thickness (in years)
+
+# cbar limits for spatial rcm plots
+rcm_plot_cbar_limits:
+  ME: [0, 3.5] # in mmweq/day
+  mltgl: [0, 3.5] # in mmweq/day
+  TI1: [240, 275] # in K
+  ts: [240, 275] # in K
+  TTZ: [245, 275]
+  tas: [245, 275]
+  SF: [0, 15]
+  prsn: [0, 15]
+  SHF: [-100, 100]
+  hfssgl: [-100, 100]
+  LHF: [-35, 35]
+  hflsgl: [-35, 35]
+  SU: [-3, 3]
+  sublgl: [-3, 3]
