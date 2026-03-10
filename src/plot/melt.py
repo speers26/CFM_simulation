@@ -44,6 +44,8 @@ def plot_larsen_c_melt(
     plt.title(f"Average Yearly Melt Map for Larsen C ({rcm_name.upper()})")
     plt.xlabel("Longitude")
     plt.ylabel("Latitude")
+    plt.xlim(config["larsenC_box"]["lon_min"], config["larsenC_box"]["lon_max"])
+    plt.ylim(config["larsenC_box"]["lat_min"], config["larsenC_box"]["lat_max"])
     plt.savefig(
         f"{config['CFM_data_path']}/cfm_figures/melt_maps/melt_avg_{rcm_name}_larsenC_{config['start_year']}_{config['end_year']}.png"
     )
