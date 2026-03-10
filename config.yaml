@@ -78,6 +78,18 @@ RACMO_additional_vars:
   - pr # total precipitation, used to calculate rainfall from pr - prsn
   - rsusgl # upward shortwave radiation, used to calculate albedo from rsugl / rsds
 
+## smb to multiply by to convert RACMO to MAR units
+RACMO_to_MAR_smb_factor: 86400 # RACMO outputs in kg/m2/s, MAR in kg/m2/day, so multiply by number of seconds (24 * 3600) in a day to convert
+RACMO_var_to_multiply:
+  - mltgl
+  - sublgl
+  - prsn
+
+## temperature variables in MAR to convert to Kelvin
+MAR_temp_vars:
+  - TTZ
+  - TI1
+
 ### ----------------- CFM Simulation ----------------- ###
 
 ## model run parameters

@@ -71,6 +71,8 @@ class SpatialPlotter:
 
         # save lat lon variables for later
         if self.rcm_name == "MAR":
+            ds = ds.sel(OUTLAY=0.0)
+            ds = ds.sel(SECTOR=1.0)
             self.lat_values, self.lon_values = (
                 ds[self.lat_name].isel({self.time_name: 0}),
                 ds[self.lon_name].isel({self.time_name: 0}),
@@ -87,20 +89,44 @@ class SpatialPlotter:
 
         self.variables = [var for var in self.variables if var in ds]
         self.ds = ds[self.variables]
+
+        self._convert_units()
         self.ds.compute()
+
+    def _convert_units(self) -> None:
+        """Converts smb variables in RACMO data from kg/m2/s to mmWE/day, to match the units of the MAR data.
+
+        Converts temperature variables in MAR data from C to K, to match the units of the RACMO data.
+
+        This method should be called after reading in the data, but before aggregating it.
+        """
+
+        if self.rcm_name == "RACMO":
+            # convert smb variables from kg/m2/s to mmWE/day
+            for var in self.variables:
+                if var in config["RACMO_var_to_multiply"]:
+                    self.ds[var] = self.ds[var] * config["RACMO_to_MAR_smb_factor"]
+                    self.ds[var].attrs["units"] = "mmWE/day"  # update units attribute to reflect conversion
+
+        elif self.rcm_name == "MAR":
+            # convert temperature variables from C to K
+            for var in self.variables:
+                if var in config["MAR_temp_vars"]:
+                    self.ds[var] = self.ds[var] + 273.15  # convert from C to K
+                    self.ds[var].attrs["units"] = "K"  # update units attribute to reflect conversion
 
     def _aggregate_data(self) -> None:
         """Aggregates the data according to the specified plot type (e.g., "mean", "max", "min", or a time point)."""
 
         if self.plot_type == "mean":
-            self.ds = self.ds.mean(dim=self.time_name)
+            self.ds = self.ds.mean(dim=self.time_name, keep_attrs=True)
         elif self.plot_type == "max":
-            self.ds = self.ds.max(dim=self.time_name)
+            self.ds = self.ds.max(dim=self.time_name, keep_attrs=True)
         elif self.plot_type == "min":
-            self.ds = self.ds.min(dim=self.time_name)
+            self.ds = self.ds.min(dim=self.time_name, keep_attrs=True)
         else:
             # assume plot_type is a time point, so select the data for that time point
-            self.ds = self.ds.sel({self.time_name: self.plot_type})
+            self.ds = self.ds.sel({self.time_name: self.plot_type}, keep_attrs=True)
 
         if self.rcm_name == "MAR":
             # reassign lat lon to MAR data, as these are needed for plotting later
@@ -128,5 +154,7 @@ class SpatialPlotter:
             plt.savefig(f"{self.save_dir}/{self.rcm_name}_{var}_{self.plot_type}.png")
             plt.close()
 
-            logging.info(f"Spatial map for {self.rcm_name} {var} ({self.plot_type}) saved to \
-                         {self.save_dir}/{self.rcm_name}_{var}_{self.plot_type}.png")
+            logging.info(
+                f"Spatial map for {self.rcm_name} {var} ({self.plot_type}) saved to \
+                         {self.save_dir}/{self.rcm_name}_{var}_{self.plot_type}.png"
+            )
