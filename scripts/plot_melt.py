@@ -1,3 +1,11 @@
+"""Script to plot average yearly melt across the AIS peninsula for MAR and RACMO, with borehole locations overlaid.
+
+Calculates melt averaged over the period specified in config
+
+Usage:
+    - plot_melt.py
+"""
+
 from plot import plot_larsen_c_melt
 from typing import Dict, Tuple
 import yaml

@@ -26,7 +26,7 @@ borehole_sites:
   WI-70: [-67.500, -63.336]
   J108: [-67.108150, -61.287483]
   J208: [-68.300383, -64.148500]
-  J408: [-68.394733, -64.713083]
+  J409: [-68.394733, -64.713083]
   J109: [-68.394667, -64.710167]
   Y208: [-67.564433, -63.257333]
 
@@ -77,6 +77,18 @@ RACMO_to_CFM_column_map:
 RACMO_additional_vars:
   - pr # total precipitation, used to calculate rainfall from pr - prsn
   - rsusgl # upward shortwave radiation, used to calculate albedo from rsugl / rsds
+
+## smb to multiply by to convert RACMO to MAR units
+RACMO_to_MAR_smb_factor: 86400 # RACMO outputs in kg/m2/s, MAR in kg/m2/day, so multiply by number of seconds (24 * 3600) in a day to convert
+RACMO_var_to_multiply:
+  - mltgl
+  - sublgl
+  - prsn
+
+## temperature variables in MAR to convert to Kelvin
+MAR_temp_vars:
+  - TTZ
+  - TI1
 
 ### ----------------- CFM Simulation ----------------- ###
 
@@ -203,3 +215,23 @@ cfm_config:
 
 ### ----------------- Plotting ----------------- ###
 thickness_change_range: [2000, 2000.25] # Range of model time to plot for change in firn thickness (in years)
+
+# cbar limits for spatial rcm plots
+rcm_plot_cbar_limits:
+  ME: [0, 3.5] # in mmweq/day
+  mltgl: [0, 3.5] # in mmweq/day
+  TI1: [240, 275] # in K
+  ts: [240, 275] # in K
+  TTZ: [245, 275]
+  tas: [245, 275]
+  SF: [0, 15]
+  prsn: [0, 15]
+  SHF: [-100, 100]
+  hfssgl: [-100, 100]
+  LHF: [-35, 35]
+  hflsgl: [-35, 35]
+  SU: [-3, 3]
+  sublgl: [-3, 3]
+
+sites_batch_1: ["CI-0", "CI-22", "CI-120", "WI-0", "WI-70"]
+sites_batch_2: ["J108", "J208", "J409"]
