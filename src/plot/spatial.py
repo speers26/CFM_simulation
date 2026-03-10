@@ -82,12 +82,7 @@ class SpatialPlotter:
         ):  # racmo doesnt store lat lon as variables, but as coordinates so have no time dim
             self.lat_values, self.lon_values = ds[self.lat_name], ds[self.lon_name]
 
-        # only keep variables that exist in this dataset
-        missing_vars = [var for var in self.variables if var not in ds]
-        for var in missing_vars:
-            logging.warning(f"Variable {var} not found in dataset for {self.rcm_name}. Skipping this variable.")
-
-        self.variables = [var for var in self.variables if var in ds]
+        # only keep variables that are needed
         self.ds = ds[self.variables]
 
         self._convert_units()

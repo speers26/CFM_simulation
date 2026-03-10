@@ -16,6 +16,8 @@ logging.basicConfig(level=logging.INFO)
 if __name__ == "__main__":
     mar_variables = config["MAR_to_CFM_column_map"].keys()
     racmo_variables = config["RACMO_to_CFM_column_map"].keys()
+    # rm 'rf' and 'alb' from racmo variables, as these are calculated from other variables and not directly available in the RACMO output
+    racmo_variables = [var for var in racmo_variables if var not in ["rf", "alb"]]
 
     # faster to plot each variable separately, as this avoids having to load in all the data for all variables at once (which can be very large and cause memory issues)
     for var in racmo_variables:
