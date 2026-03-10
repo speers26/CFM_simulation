@@ -140,8 +140,13 @@ class SpatialPlotter:
 
         for var in self.variables:
             plt.figure(figsize=(10, 8))
-            self.ds[var].plot(x=self.lon_name, y=self.lat_name, cmap="Blues", 
-                                vmin=config["rcm_plot_cbar_limits"][var][0], vmax=config["rcm_plot_cbar_limits"][var][1])
+            self.ds[var].plot(
+                x=self.lon_name,
+                y=self.lat_name,
+                cmap="Blues",
+                vmin=config["rcm_plot_cbar_limits"][var][0],
+                vmax=config["rcm_plot_cbar_limits"][var][1],
+            )
             plt.xlim(config["larsenC_box"]["lon_min"], config["larsenC_box"]["lon_max"])
             plt.ylim(config["larsenC_box"]["lat_min"], config["larsenC_box"]["lat_max"])
             plt.title(f"{self.rcm_name} {var} ({self.plot_type})")
