@@ -52,7 +52,7 @@ class SpatialPlotter:
 
         logging.info("Plotting spatial map...")
         self._plot_spatial_map()
-        logging.info("...Spatial map plotted.")
+        logging.info("...All spatial maps plotted.")
 
     def _read_data(self) -> None:
         """Reads in the data for the specified RCM and variables, and concatenates it into a single xarray Dataset."""
@@ -80,7 +80,12 @@ class SpatialPlotter:
         ):  # racmo doesnt store lat lon as variables, but as coordinates so have no time dim
             self.lat_values, self.lon_values = ds[self.lat_name], ds[self.lon_name]
 
-        # only keep the variables we want to plot
+        # only keep variables that exist in this dataset
+        missing_vars = [var for var in self.variables if var not in ds]
+        for var in missing_vars:
+            logging.warning(f"Variable {var} not found in dataset for {self.rcm_name}. Skipping this variable.")
+
+        self.variables = [var for var in self.variables if var in ds]
         self.ds = ds[self.variables]
         self.ds.compute()
 
@@ -122,3 +127,6 @@ class SpatialPlotter:
             plt.ylabel("Latitude")
             plt.savefig(f"{self.save_dir}/{self.rcm_name}_{var}_{self.plot_type}.png")
             plt.close()
+
+            logging.info(f"Spatial map for {self.rcm_name} {var} ({self.plot_type}) saved to \
+                         {self.save_dir}/{self.rcm_name}_{var}_{self.plot_type}.png")
