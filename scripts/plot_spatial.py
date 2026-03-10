@@ -11,7 +11,6 @@ with open("config.yaml", "r") as f:
     config = yaml.safe_load(f)
 
 if __name__ == "__main__":
-
     mar_variables = config["MAR_to_CFM_column_map"].keys()
     racmo_variables = config["RACMO_to_CFM_column_map"].keys()
 
