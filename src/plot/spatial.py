@@ -65,7 +65,7 @@ class SpatialPlotter:
         # use the processer to read in data
         if self.rcm_name == "RACMO":
             processor._var_to_read = self.variables  # do this to speed up reading for racmo data
-        # use the processor to read in data
+
         ds = processor._read_data()
         ds = xr.concat(ds, dim=self.time_name)
 
@@ -156,6 +156,6 @@ class SpatialPlotter:
             plt.close()
 
             logging.info(
-                f"Spatial map for {self.rcm_name} {var} ({self.plot_type}) saved to \
-                         {self.save_dir}/{self.rcm_name}_{var}_{self.plot_type}.png"
+                f"Spatial map for {self.rcm_name} {var} ({self.plot_type}) saved to "
+                f"{self.save_dir}/{self.rcm_name}_{var}_{self.plot_type}.png"
             )

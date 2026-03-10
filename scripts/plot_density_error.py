@@ -45,13 +45,13 @@ if __name__ == "__main__":
     rcm_name = config["rcm_name"]
     melt_scheme = config["cfm_config"]["liquid"]
 
-    sites_batch_1 = ["CI-0", "CI-22", "CI-120", "WI-0", "WI-70"]
-    sites_batch_2 = ["J108", "J208", "J409"]
+    sites_batch_1 = config["sites_batch_1"]
+    sites_batch_2 = config["sites_batch_2"]
 
     period1 = [
         2009 + 11 / 12,
         2010 + 1 / 12,
-    ]  # astrochronological summer of 2014 (December 2014 - February 2015)
+    ]  
     period2 = [
         2009 + 11 / 12,
         2010 + 1 / 12,
@@ -149,7 +149,7 @@ if __name__ == "__main__":
             plt.gca().invert_yaxis()
             plt.xlabel("Density (kg/m³)")
             plt.ylabel("Depth (m)")
-            plt.title(f"Density vs Depth (model difference) for {site}")
+            plt.title(f"Density vs Depth for {site}")
             plt.legend()
             plt.grid()
             plt.savefig(

@@ -232,3 +232,6 @@ rcm_plot_cbar_limits:
   hflsgl: [-35, 35]
   SU: [-3, 3]
   sublgl: [-3, 3]
+
+sites_batch_1: ["CI-0", "CI-22", "CI-120", "WI-0", "WI-70"]
+sites_batch_2: ["J108", "J208", "J409"]
