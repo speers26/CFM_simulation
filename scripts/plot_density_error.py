@@ -55,9 +55,8 @@ if __name__ == "__main__":
     period2 = [
         2009 + 11 / 12,
         2010 + 1 / 12,
-    ]  
+    ]
     for site, (lat, lon) in borehole_sites.items():
-
         if site in sites_batch_1:
             period1 = [
                 2014 + 11 / 12,
@@ -71,11 +70,11 @@ if __name__ == "__main__":
             period1 = period2 = [
                 2009 + 11 / 12,
                 2010 + 1 / 12,
-            ] 
+            ]
 
         # load in in situ density data for this site
         in_situ_path = f"/home/speersm/luna/CPOM/speersm/in_situ/{site}_depth-density.csv"
-    
+
         try:
             in_situ_data = pd.read_csv(in_situ_path)
             # put in situ data on same depth grid as model output
@@ -112,7 +111,9 @@ if __name__ == "__main__":
                 density_summer = results_dict["density"][summer_mask, :]
 
                 # only keep model data from depths where we have in situ data
-                depth_mask = (results_dict["depth"] >= in_situ_depth.min()) & (results_dict["depth"] <= in_situ_depth.max())
+                depth_mask = (results_dict["depth"] >= in_situ_depth.min()) & (
+                    results_dict["depth"] <= in_situ_depth.max()
+                )
 
                 # interpolate in model data to in situ depth grid
                 density_summer_interp = np.empty((density_summer.shape[0], len(in_situ_depth)))
@@ -157,4 +158,3 @@ if __name__ == "__main__":
 
         except FileNotFoundError:
             logging.warning(f"In situ data file not found for site {site} at path {in_situ_path}. Skipping this site.")
-            
