@@ -71,8 +71,13 @@ class SpatialPlotter:
 
         # save lat lon variables for later
         if self.rcm_name == "MAR":
-            self.lat_values, self.lon_values = ds[self.lat_name].isel({self.time_name: 0}), ds[self.lon_name].isel({self.time_name: 0})
-        elif self.rcm_name == "RACMO": # racmo doesnt store lat lon as variables, but as coordinates so have no time dim
+            self.lat_values, self.lon_values = (
+                ds[self.lat_name].isel({self.time_name: 0}),
+                ds[self.lon_name].isel({self.time_name: 0}),
+            )
+        elif (
+            self.rcm_name == "RACMO"
+        ):  # racmo doesnt store lat lon as variables, but as coordinates so have no time dim
             self.lat_values, self.lon_values = ds[self.lat_name], ds[self.lon_name]
 
         # only keep the variables we want to plot
