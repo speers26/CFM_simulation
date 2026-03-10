@@ -42,7 +42,7 @@ if __name__ == "__main__":
         "Ligtenberg2011",
     ]
     start, end = config["start_year"], config["end_year"]
-    rcm_name = "MAR"# config["rcm_name"]
+    rcm_name = "MAR"  # config["rcm_name"]
     melt_scheme = config["cfm_config"]["liquid"]
 
     sites_batch_1 = config["sites_batch_1"]
@@ -109,9 +109,7 @@ if __name__ == "__main__":
             density_summer = results_dict["density"][summer_mask, :]
 
             # only keep model data from depths where we have in situ data
-            depth_mask = (results_dict["depth"] >= in_situ_depth.min()) & (
-                results_dict["depth"] <= in_situ_depth.max()
-            )
+            depth_mask = (results_dict["depth"] >= in_situ_depth.min()) & (results_dict["depth"] <= in_situ_depth.max())
 
             # interpolate in model data to in situ depth grid
             density_summer_interp = np.empty((density_summer.shape[0], len(in_situ_depth)))
