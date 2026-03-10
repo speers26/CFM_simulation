@@ -146,6 +146,4 @@ if __name__ == "__main__":
         plt.title(f"Density vs Depth for {site}")
         plt.legend()
         plt.grid()
-        plt.savefig(
-            f"/home/speersm/luna/CPOM/speersm/CFM_data/cfm_figures/errors/{site}_{melt_scheme}_{rcm_name}.png"
-        )
+        plt.savefig(f"/home/speersm/luna/CPOM/speersm/CFM_data/cfm_figures/errors/{site}_{melt_scheme}_{rcm_name}.png")
