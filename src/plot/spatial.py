@@ -69,6 +69,12 @@ class SpatialPlotter:
         ds = processor._read_data()
         ds = xr.concat(ds, dim=self.time_name)
 
+        # save lat lon variables for later
+        if self.rcm_name == "MAR":
+            self.lat_values, self.lon_values = ds[self.lat_name].isel({self.time_name: 0}), ds[self.lon_name].isel({self.time_name: 0})
+        elif self.rcm_name == "RACMO": # racmo doesnt store lat lon as variables, but as coordinates so have no time dim
+            self.lat_values, self.lon_values = ds[self.lat_name], ds[self.lon_name]
+
         # only keep the variables we want to plot
         self.ds = ds[self.variables]
         self.ds.compute()
@@ -86,12 +92,26 @@ class SpatialPlotter:
             # assume plot_type is a time point, so select the data for that time point
             self.ds = self.ds.sel({self.time_name: self.plot_type})
 
+        if self.rcm_name == "MAR":
+            # reassign lat lon to MAR data, as these are needed for plotting later
+            self.ds = self.ds.assign_coords(LON=self.lon_values, LAT=self.lat_values)
+
     def _plot_spatial_map(self) -> None:
         """Plots the spatial map of the specified variable(s) for the specified RCM and plot type."""
 
+        # restrict to larsenC_box
+        self.ds = self.ds.where(
+            (self.ds[self.lat_name] >= config["larsenC_box"]["lat_min"])
+            & (self.ds[self.lat_name] <= config["larsenC_box"]["lat_max"])
+            & (self.ds[self.lon_name] >= config["larsenC_box"]["lon_min"])
+            & (self.ds[self.lon_name] <= config["larsenC_box"]["lon_max"]),
+        )
+
         for var in self.variables:
             plt.figure(figsize=(10, 8))
-            self.ds[var].plot()
+            self.ds[var].plot(x=self.lon_name, y=self.lat_name, cmap="Blues")
+            plt.xlim(config["larsenC_box"]["lon_min"], config["larsenC_box"]["lon_max"])
+            plt.ylim(config["larsenC_box"]["lat_min"], config["larsenC_box"]["lat_max"])
             plt.title(f"{self.rcm_name} {var} ({self.plot_type})")
             plt.xlabel("Longitude")
             plt.ylabel("Latitude")
