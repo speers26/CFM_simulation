@@ -42,7 +42,7 @@ if __name__ == "__main__":
         "Ligtenberg2011",
     ]
     start, end = config["start_year"], config["end_year"]
-    rcm_name = "MAR"  # config["rcm_name"]
+    rcm_name = config["rcm_name"]
     melt_scheme = config["cfm_config"]["liquid"]
 
     sites_batch_1 = config["sites_batch_1"]
@@ -83,9 +83,7 @@ if __name__ == "__main__":
         for physrho in physrho_values:
             # load simulation
             # round coordinates to 5 dp, then drop trailing zeros for cleaner paths
-            lat_str = f"{lat:.5f}".rstrip("0").rstrip(".")
-            lon_str = f"{lon:.5f}".rstrip("0").rstrip(".")
-            output_path = f"{config['CFM_data_path']}/cfm_output/CFMoutput_{lat_str}_{lon_str}_{start}_{end}_{physrho}_{melt_scheme}_{rcm_name}/CFMresults.hdf5"
+            output_path = f"{config['CFM_data_path']}/cfm_output/CFMoutput_{lat:.3f}_{lon:.3f}_{start}_{end}_{physrho}_{melt_scheme}_{rcm_name}/CFMresults.hdf5"
             with xr.open_dataset(output_path, engine="h5netcdf", phony_dims="sort") as ds:
                 results_dict = {
                     "model_time_matrix": ds["density"][1:, 0],
@@ -139,15 +137,15 @@ if __name__ == "__main__":
                 alpha=0.3,
                 color=plt.gca().lines[-1].get_color(),
             )
-            # also plot in situ density profile for reference
-            # add vertical line at 0 to indicate perfect agreement between model and in situ
-            plt.plot(in_situ_density, in_situ_depth, label="In situ", color="k", linewidth=1)
-            plt.gca().invert_yaxis()
-            plt.xlabel("Density (kg/m³)")
-            plt.ylabel("Depth (m)")
-            plt.title(f"Density vs Depth for {site}")
-            plt.legend()
-            plt.grid()
-            plt.savefig(
-                f"/home/speersm/luna/CPOM/speersm/CFM_data/cfm_figures/errors/{site}_{melt_scheme}_{rcm_name}.png"
-            )
+        # also plot in situ density profile for reference
+        # add vertical line at 0 to indicate perfect agreement between model and in situ
+        plt.plot(in_situ_density, in_situ_depth, label="In situ", color="k", linewidth=1)
+        plt.gca().invert_yaxis()
+        plt.xlabel("Density (kg/m³)")
+        plt.ylabel("Depth (m)")
+        plt.title(f"Density vs Depth for {site}")
+        plt.legend()
+        plt.grid()
+        plt.savefig(
+            f"/home/speersm/luna/CPOM/speersm/CFM_data/cfm_figures/errors/{site}_{melt_scheme}_{rcm_name}.png"
+        )
