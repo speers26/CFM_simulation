@@ -2,13 +2,14 @@ import xarray as xr
 import pandas as pd
 import matplotlib.pyplot as plt
 
+
 def read_output_data(file_path):
     """
     Reads the output data from a NetCDF file and returns it as an xarray Dataset.
-    
+
     Parameters:
     file_path (str): The path to the NetCDF file containing the output data.
-    
+
     Returns:
     dict: A dictionary containing the model time matrix, model time vector, depth, density, temperature, and DIP.
     """
@@ -25,13 +26,19 @@ def read_output_data(file_path):
             # dHOut from CFM update_dH: column index 2 in full DIP array,
             # units are meters of surface-height change per model step.
             "dH_step": ds["DIP"][1:, 2],
-     }
+        }
 
     return results_dict
 
-if __name__ == "__main__":
 
-    lat_lon_pairs = [('-66.403', '-63.376'), ('-66.588', '-63.212'), ('-67.000', '-61.486'), ('-67.444', '-64.953'), ('-67.500', '-63.336')]
+if __name__ == "__main__":
+    lat_lon_pairs = [
+        ("-66.403", "-63.376"),
+        ("-66.588", "-63.212"),
+        ("-67.000", "-61.486"),
+        ("-67.444", "-64.953"),
+        ("-67.500", "-63.336"),
+    ]
 
     for lat, lon in lat_lon_pairs:
         input_path = f"/home/speersm/luna/CPOM/speersm/CFM_data/cfm_input/MAR_{float(lat)}_{float(lon)}_1979_2024.csv"
@@ -57,8 +64,5 @@ if __name__ == "__main__":
         plt.savefig(f"dh_dt_time_series_{lat}_{lon}.png", dpi=300)
 
         # save time series data to CSV
-        output_df = pd.DataFrame({
-            "TIME": input_df["TIME"],
-            "dh_dt": dH_step
-        })
+        output_df = pd.DataFrame({"TIME": input_df["TIME"], "dh_dt": dH_step})
         output_df.to_csv(f"dh_dt_time_series_{lat}_{lon}.csv", index=False)
