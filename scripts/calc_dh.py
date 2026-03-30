@@ -40,22 +40,29 @@ if __name__ == "__main__":
         ("-67.500", "-63.336"),
     ]
 
+    phys_rho_options = ("GSFC2020", "HLdynamic", "Crocus", "Barnola1991", "Ligtenberg2011")
+
     for lat, lon in lat_lon_pairs:
         input_path = f"/home/speersm/luna/CPOM/speersm/CFM_data/cfm_input/MAR_{float(lat)}_{float(lon)}_1979_2024.csv"
-        output_path = f"/home/speersm/luna/CPOM/speersm/CFM_data/cfm_output/CFMoutput_{lat}_{lon}_1979_2024_GSFC2020_bucket_MAR/CFMresults.hdf5"
-
         input_df = pd.read_csv(input_path, parse_dates=["TIME"])
-        results_dict = read_output_data(output_path)
-
-        # only keep input from 1980 onwards
         input_df = input_df[input_df["TIME"] >= pd.Timestamp("1980-01-01")]
 
-        # Align lengths so time and DIP-derived series are paired safely.
-        dH_step = results_dict["dH_step"].values
-
-        # plot
         plt.figure(figsize=(10, 6))
-        plt.plot(input_df["TIME"], dH_step, label="dh/dt")
+        for phys_rho in phys_rho_options:
+
+            output_path = f"/home/speersm/luna/CPOM/speersm/CFM_data/cfm_output/CFMoutput_{lat}_{lon}_1979_2024_{phys_rho}_bucket_MAR/CFMresults.hdf5"
+            results_dict = read_output_data(output_path)
+
+            # Align lengths so time and DIP-derived series are paired safely.
+            dH_step = results_dict["dH_step"].values
+
+            # plot
+            plt.plot(input_df["TIME"], dH_step, label=phys_rho, alpha=0.5)
+
+            # save
+            output_df = pd.DataFrame({"TIME": input_df["TIME"], "dh_dt": dH_step})
+            output_df.to_csv(f"dh_dt_time_series_{lat}_{lon}_{phys_rho}.csv", index=False)
+
         plt.xlabel("Time")
         plt.ylabel("dh/dt (m/day)")
         plt.title("Rate of change of ice thickness (dh/dt) over time")
@@ -63,6 +70,3 @@ if __name__ == "__main__":
         plt.grid()
         plt.savefig(f"dh_dt_time_series_{lat}_{lon}.png", dpi=300)
 
-        # save time series data to CSV
-        output_df = pd.DataFrame({"TIME": input_df["TIME"], "dh_dt": dH_step})
-        output_df.to_csv(f"dh_dt_time_series_{lat}_{lon}.csv", index=False)
