@@ -1,3 +1,12 @@
+""" Script to calculate the rate of change of ice thickness (dh/dt) from the CFM output data and plot it over time for
+different physical density options. The script reads the output data from NetCDF files, extracts the relevant variables,
+and creates time series plots of dh/dt for each physical density option. These are saved to csv files 
+
+Usage:
+    - python calc_dh.py
+
+"""
+
 import xarray as xr
 import pandas as pd
 import matplotlib.pyplot as plt

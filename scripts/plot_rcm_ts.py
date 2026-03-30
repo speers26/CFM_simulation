@@ -1,7 +1,8 @@
 """
 Script to generate plots of time series for MAR and RACMO forcing data at specified borehole sites. The script will:
 - Load the MAR and RACMO forcing data for each borehole site from the processed csv
-- Generate time series plots of the forcing variables (e.g., temperature, accumulation) for each site and each RCM. The plots will show the temporal variability in the forcing data at the borehole locations.
+- Generate time series plots of the forcing variables (e.g., temperature, accumulation) for each site and each RCM.
+The plots will show the temporal variability in the forcing data at the borehole locations.
 - Overlay the time series for MAR and RACMO on the same plot for each variable to compare the two RCMs at each site.
 The resulting plots will be saved to the specified figure path.
 
