@@ -49,7 +49,6 @@ if __name__ == "__main__":
 
         plt.figure(figsize=(10, 6))
         for phys_rho in phys_rho_options:
-
             output_path = f"/home/speersm/luna/CPOM/speersm/CFM_data/cfm_output/CFMoutput_{lat}_{lon}_1979_2024_{phys_rho}_bucket_MAR/CFMresults.hdf5"
             results_dict = read_output_data(output_path)
 
@@ -69,4 +68,3 @@ if __name__ == "__main__":
         plt.legend()
         plt.grid()
         plt.savefig(f"dh_dt_time_series_{lat}_{lon}.png", dpi=300)
-
