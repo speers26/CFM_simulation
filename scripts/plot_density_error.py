@@ -49,8 +49,6 @@ if __name__ == "__main__":
     sites_batch_2 = config["sites_batch_2"]
     sites_batch_3 = config["sites_batch_3"]
 
-
-
     # period1 = [
     #     2009 + 11 / 12,
     #     2010 + 1 / 12,
