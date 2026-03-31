@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# this script runs the plot_cfm.py script for all combinations of lat/lon and physrho values, using a single RCM and
+# liquid type. It logs the output to a timestamped log file in the logs directory.
+# the plots which come from this aren't polished and would need to be edited for presentation, but act as a starting 
+# point to quickly sanity check CFM output.
+
 # Create log file with timestamp
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LOG_DIR="${SCRIPT_DIR}/../logs"
