@@ -211,7 +211,7 @@ class ProcessRACMO(ProcessBase):
         self._var_to_read = list(config["RACMO_to_CFM_column_map"].keys())
         self._var_to_read += config["RACMO_additional_vars"]
 
-        self._snowfall_name = "prsn" # this changes between RACMO versions
+        self._snowfall_name = "prsn"  # this changes between RACMO versions
 
     def process(self) -> None:
         """
@@ -297,7 +297,7 @@ class ProcessRACMO(ProcessBase):
         borehole_df["mltgl"] = np.clip(borehole_df["mltgl"], a_min=0, a_max=None)
 
         # get rf and alb
-        borehole_df["rf"] = borehole_df["pr"] - borehole_df[self._snowfall_name] 
+        borehole_df["rf"] = borehole_df["pr"] - borehole_df[self._snowfall_name]
         borehole_df["alb"] = borehole_df["rsusgl"] / borehole_df["rsds"]
 
         # rename columns to match CFM input column names
