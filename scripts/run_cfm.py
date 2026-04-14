@@ -12,7 +12,7 @@ Usage:
 
 """
 
-from force.process import ProcessMAR, ProcessRACMO
+from force.process import ProcessMAR, ProcessRACMO, ProcessRACMO23
 from sim.run import CFMRun
 import yaml
 import argparse
@@ -60,8 +60,10 @@ if __name__ == "__main__":
         ProcessMAR(borehole_lat, borehole_lon).process()
     elif rcm_name == "RACMO":
         ProcessRACMO(borehole_lat, borehole_lon).process()
+    elif rcm_name == "RACMO23":
+        ProcessRACMO23(borehole_lat, borehole_lon).process()
     else:
-        logging.error(f"Invalid RCM name: {rcm_name}. Please choose either 'MAR' or 'RACMO'.")
+        logging.error(f"Invalid RCM name: {rcm_name}. Please choose either 'MAR' or 'RACMO' or 'RACMO23'.")
         exit(1)
 
     CFMRun(borehole_lat, borehole_lon, physRho, rcm_name, liquid).run()

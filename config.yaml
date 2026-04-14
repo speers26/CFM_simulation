@@ -8,6 +8,7 @@ MAR_data_path: /home/speersm/luna/CPOM/briggsk/RCM_data/Data/MAR/AIS/27.5km # pa
 RACMO_data_path: /home/speersm/luna/CPOM/archive/MODELS/RCM/RACMO/AIS/Feb_2026/ANT-12/ERA5/evaluation/day # path to RACMO forcing data directory stored on luna
 CFM_data_path: /home/speersm/luna/CPOM/speersm/CFM_data # path to store CFM input and output data
 force_data_save_path_pattern: "{CFM_data_path}/cfm_input/{rcm_name}_{borehole_lat}_{borehole_lon}_{start_year}_{end_year}.csv" # configurable forcing file naming pattern
+RACMO23_data_path: /home/speersm/luna/CPOM/archive/MODELS/RCM/RACMO/AIS/Mar_2026 # path to higher resolution RACMO 2.3 data directory stored on luna
 
 # Period
 start_year: 1979
@@ -19,18 +20,18 @@ borehole_lon: -63.376
 
 # borehole sites - these are the locations of the boreholes for which we have firn temperature profiles to compare to - used in plotting scripts mostly
 borehole_sites:
-  # CI-0: [-66.403, -63.376]
-  # CI-22: [-66.588, -63.212]
-  # CI-120: [-67.000, -61.486]
-  # WI-0: [-67.444, -64.953]
-  # WI-70: [-67.500, -63.336]
+  CI-0: [-66.403, -63.376]
+  CI-22: [-66.588, -63.212]
+  CI-120: [-67.000, -61.486]
+  WI-0: [-67.444, -64.953]
+  WI-70: [-67.500, -63.336]
   # J108: [-67.108, -61.287]
   # J208: [-68.300, -64.149]
   # J409: [-68.395, -64.713]
   # J109: [-68.395, -64.710]
   # Y208: [-67.564, -63.257]
-  JP21: [-68.0086, -64.3668]
-  SI47: [-68.0408, -64.3236]
+  # JP21: [-68.0086, -64.3668]
+  # SI47: [-68.0408, -64.3236]
 
 # bounding box for larsenC area
 larsenC_box:
@@ -40,7 +41,7 @@ larsenC_box:
   lon_max: -55.0
 
 # RCM name to use for forcing data (e.g., MAR or RACMO)
-rcm_name: RACMO
+rcm_name: RACMO23
 
 ## MAR Sector
 sector: 1.0 # only take data from this sector in MAR files (think is ice vs non-ice)
@@ -72,6 +73,20 @@ RACMO_to_CFM_column_map:
   rlds: LW_d # downward longwave radiation
   rf: RAIN # rainfall - to be calculated as rf = pr - prsn, where pr is total precipitation and prsn is snowfall
   prsn: BDOT # snowfall
+  alb: ALBEDO # surface albedo - to be calculated as alb = rsusgl / rsds, where rsusgl is upward shortwave radiation and rsds is downward shortwave radiation
+  mltgl: SMELT # melt
+
+# some change in variable names in the higher resolution (but older) RACMO 2.3 data, so need a separate mapping for that
+RACMO23_to_CFM_column_map:
+  tas: T2m # 2m above surface temperature
+  ts: TSKIN # surface temperature
+  subltot: SUBLIM # sublimation
+  hfssgl: QH # sensible heat flux
+  hflsgl: QL # latent heat flux
+  rsds: SW_d # downward shortwave radiation
+  rlds: LW_d # downward longwave radiation
+  rf: RAIN # rainfall - to be calculated as rf = pr - prsn, where pr is total precipitation and prsn is snowfall
+  sf: BDOT # snowfall
   alb: ALBEDO # surface albedo - to be calculated as alb = rsusgl / rsds, where rsusgl is upward shortwave radiation and rsds is downward shortwave radiation
   mltgl: SMELT # melt
 
