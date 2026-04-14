@@ -1,4 +1,5 @@
 """Script to plot spatial maps of variables from the RCM simulations, typically restricted to AIS peninsula.
+The bbox for this restriction can be set in config.yaml.
 
 Usage:
     - plot_spatial.py

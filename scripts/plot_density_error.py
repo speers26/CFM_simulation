@@ -47,15 +47,26 @@ if __name__ == "__main__":
 
     sites_batch_1 = config["sites_batch_1"]
     sites_batch_2 = config["sites_batch_2"]
+    sites_batch_3 = config["sites_batch_3"]
 
-    period1 = [
-        2009 + 11 / 12,
-        2010 + 1 / 12,
-    ]
-    period2 = [
-        2009 + 11 / 12,
-        2010 + 1 / 12,
-    ]
+    # period1 = [
+    #     2009 + 11 / 12,
+    #     2010 + 1 / 12,
+    # ]
+    # period2 = [
+    #     2009 + 11 / 12,
+    #     2010 + 1 / 12,
+    # ]
+
+    # period1 = [
+    #     2009 + 11 / 12,
+    #     2010 + 1 / 12,
+    # ]
+    # period2 = [
+    #     2009 + 11 / 12,
+    #     2010 + 1 / 12,
+    # ]
+
     for site, (lat, lon) in borehole_sites.items():
         if site in sites_batch_1:
             period1 = [
@@ -70,6 +81,11 @@ if __name__ == "__main__":
             period1 = period2 = [
                 2009 + 11 / 12,
                 2010 + 1 / 12,
+            ]
+        elif site in sites_batch_3:
+            period1 = period2 = [
+                2022 + 11 / 12,
+                2023 + 1 / 12,
             ]
 
         # load in in situ density data for this site

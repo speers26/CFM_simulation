@@ -1,12 +1,18 @@
 #!/bin/bash
 
+# this script runs the run_cfm.py script for all combinations of lat/lon, physrho, and RCM values. You have the option
+# to change the liquid scheme (e.g. to something other than "bucked") but currently they don't seem to be working in the
+# CFM. I've let Max Stevens (maxstev@umd.edu) know about this and he said he would look into it.
+
 # Define arrays of latitude/longitude pairs (same index = same location)
 # LATITUDES=(-66.403 -66.588 -67.000 -67.444 -67.500)
 # LONGITUDES=(-63.376 -63.212 -61.486 -64.953 -63.336)
-LATITUDES=(-67.10815 -68.30038 -68.39473 -68.39467 -67.56443)
-LONGITUDES=(-61.28748 -64.14850 -64.71308 -64.71017 -63.25733)
+# LATITUDES=(-67.10815 -68.30038 -68.39473 -68.39467 -67.56443)
+# LONGITUDES=(-61.28748 -64.14850 -64.71308 -64.71017 -63.25733)
+LATITUDES=(-68.0086 -68.0408)
+LONGITUDES=(-64.3668 -64.3236)
 PHYSRHO_VALUES=("GSFC2020" "HLdynamic" "Crocus" "Barnola1991" "Ligtenberg2011")
-RCM_VALUES=("RACMO")
+RCM_VALUES=("RACMO" "MAR")
 LIQUID_VALUE="bucket"
 
 # Counters for tracking results
