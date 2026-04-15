@@ -210,6 +210,7 @@ class ProcessRACMO(ProcessBase):
         )
         self._var_to_read = list(config["RACMO_to_CFM_column_map"].keys())
         self._var_to_read += config["RACMO_additional_vars"]
+        self._map_name = "RACMO_to_CFM_column_map"
 
         self._snowfall_name = "prsn"  # this changes between RACMO versions
 
@@ -301,7 +302,7 @@ class ProcessRACMO(ProcessBase):
         borehole_df["alb"] = borehole_df["rsusgl"] / borehole_df["rsds"]
 
         # rename columns to match CFM input column names
-        mapping = config["RACMO23_to_CFM_column_map"]
+        mapping = config[self._map_name]
         borehole_df.rename(columns=mapping, inplace=True)
         borehole_df.set_index("time", inplace=True)
 
@@ -355,6 +356,7 @@ class ProcessRACMO23(ProcessRACMO):
         self._var_to_read += config["RACMO_additional_vars"]
 
         self._snowfall_name = "sf"
+        self._map_name = "RACMO23_to_CFM_column_map"
 
     def _read_data(self) -> List[xr.Dataset]:
         """Read in the RACMO2.3 .nc files from the specified data path in config, filtering for files which contain the
