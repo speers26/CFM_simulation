@@ -1,7 +1,7 @@
 asttokens==3.0.1
 certifi==2026.1.4
 cfgv==3.5.0
-cfm==0.1.0
+. -e
 cftime==1.6.5
 click==8.3.1
 cloudpickle==3.1.2
