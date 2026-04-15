@@ -210,6 +210,9 @@ class ProcessRACMO(ProcessBase):
         )
         self._var_to_read = list(config["RACMO_to_CFM_column_map"].keys())
         self._var_to_read += config["RACMO_additional_vars"]
+        self._map_name = "RACMO_to_CFM_column_map"
+
+        self._snowfall_name = "prsn"  # this changes between RACMO versions
 
     def process(self) -> None:
         """
@@ -291,15 +294,15 @@ class ProcessRACMO(ProcessBase):
 
         # ensure mass fluxes are positive
         borehole_df["pr"] = np.clip(borehole_df["pr"], a_min=0, a_max=None)
-        borehole_df["prsn"] = np.clip(borehole_df["prsn"], a_min=0, a_max=None)
+        borehole_df[self._snowfall_name] = np.clip(borehole_df[self._snowfall_name], a_min=0, a_max=None)
         borehole_df["mltgl"] = np.clip(borehole_df["mltgl"], a_min=0, a_max=None)
 
         # get rf and alb
-        borehole_df["rf"] = borehole_df["pr"] - borehole_df["prsn"]
+        borehole_df["rf"] = borehole_df["pr"] - borehole_df[self._snowfall_name]
         borehole_df["alb"] = borehole_df["rsusgl"] / borehole_df["rsds"]
 
         # rename columns to match CFM input column names
-        mapping = config["RACMO_to_CFM_column_map"]
+        mapping = config[self._map_name]
         borehole_df.rename(columns=mapping, inplace=True)
         borehole_df.set_index("time", inplace=True)
 
@@ -326,3 +329,74 @@ class ProcessRACMO(ProcessBase):
         borehole_df = borehole_df[~borehole_df.index.duplicated(keep="first")]
 
         return borehole_df
+
+
+class ProcessRACMO23(ProcessRACMO):
+    def __init__(self, borehole_lat: float, borehole_lon: float) -> None:
+        """Initialize with daily RACMO 2.3 dataset at specified borehole coordinates. Reads in .nc files from higher
+        resolution RACMO 2.3 data path specified in config.
+
+        Args:
+            borehole_lat (float): Latitude of borehole location.
+            borehole_lon (float): Longitude of borehole location.
+        """
+
+        super().__init__(borehole_lat, borehole_lon)
+
+        self._rcm_name: str = "RACMO23"
+        self._save_path: str = config["force_data_save_path_pattern"].format(
+            CFM_data_path=config["CFM_data_path"],
+            rcm_name=self._rcm_name,
+            borehole_lat=borehole_lat,
+            borehole_lon=borehole_lon,
+            start_year=config["start_year"],
+            end_year=config["end_year"],
+        )
+        self._var_to_read = list(config["RACMO23_to_CFM_column_map"].keys())
+        self._var_to_read += config["RACMO_additional_vars"]
+
+        self._snowfall_name = "sf"
+        self._map_name = "RACMO23_to_CFM_column_map"
+
+    def _read_data(self) -> List[xr.Dataset]:
+        """Read in the RACMO2.3 .nc files from the specified data path in config, filtering for files which contain the
+        variables we want to read and which contain a year between start and end year in config.
+
+        Returns:
+            List[xr.Dataset]: List of xarray Datasets for each batch of years of RACMO data
+        """
+
+        racmo_data_path = config["RACMO23_data_path"]
+        all_files = os.listdir(racmo_data_path)
+        datasets = []
+
+        for year in range(config["start_year"], config["end_year"] + 1):
+            year_files = [f"{config['RACMO23_data_path']}/{file}" for file in all_files if f"{year}" in file]
+            if year_files:
+                datasets.append(self._read_data_by_year_all_vars(year_files))
+
+        return datasets
+
+    def _read_data_by_year_all_vars(self, year_files: List[str]) -> xr.Dataset:
+        """
+        For a given year, read all RACMO files containing any of the variables we want to read, then merge these into a
+        single xarray Dataset for that year.
+
+        Args:
+            year_files (List[str]): List of all files in the RACMO2.3 data directory with given year in name.
+
+        Returns:
+            xr.Dataset: Merged xarray Dataset containing all variables we want to read for the given year.
+
+        """
+
+        var_files = []
+        for var in self._var_to_read:
+            var_file = next((file for file in year_files if f"{var}." in file), None)
+            if var_file is not None:
+                var_files.append(var_file)
+        # Use on-disk chunk structure to avoid splitting stored chunks (better Dask performance).
+        datasets = [xr.open_dataset(file, chunks="auto") for file in var_files]
+        merged_dataset = xr.merge(datasets, compat="override")
+
+        return merged_dataset
