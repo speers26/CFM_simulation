@@ -9,7 +9,6 @@
 
 set -euo pipefail
 
-source /etc/profile
 source activate CFM
 
 LATLON_FILE=${LATLON_FILE:-scripts/latlon_pairs.txt}
