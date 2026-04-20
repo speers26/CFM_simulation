@@ -6,6 +6,11 @@ src/cfm.egg-info/SOURCES.txt
 src/cfm.egg-info/dependency_links.txt
 src/cfm.egg-info/top_level.txt
 src/force/__init__.py
+src/force/melt.py
 src/force/process.py
 src/plot/__init__.py
+src/plot/melt.py
+src/plot/results.py
+src/plot/spatial.py
 src/sim/__init__.py
+src/sim/run.py

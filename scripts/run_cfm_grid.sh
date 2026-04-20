@@ -10,12 +10,12 @@
 source /etc/profile
 set -euo pipefail
 
-source activate CFM
-
+echo "Reading from latlon file"
 LATLON_FILE=${LATLON_FILE:-scripts/latlon_pairs.txt}
 RCM=${RCM:-RACMO}
 PHYSRHO=${PHYSRHO:-GSFC2020}
 LIQUID=${LIQUID:-bucket}
+echo "done."
 
 line=$(sed -n "${SLURM_ARRAY_TASK_ID}p" "$LATLON_FILE")
 lat=$(echo "$line" | awk '{print $1}')
@@ -27,5 +27,5 @@ if [[ -z "${lat}" || -z "${lon}" ]]; then
 fi
 
 echo "Starting CFM grid simulation for lat=${lat}, lon=${lon}"
-python scripts/run_cfm.py --lat "$lat" --lon "$lon" --physrho "$PHYSRHO" --rcm "$RCM" --liquid "$LIQUID"
+/home/hpc/11/speersm/.conda/envs/CFM/bin/python /home/hpc/11/speersm/CFM_simulation/scripts/run_cfm.py --lat "$lat" --lon "$lon" --physrho "$PHYSRHO" --rcm "$RCM" --liquid "$LIQUID"
 
