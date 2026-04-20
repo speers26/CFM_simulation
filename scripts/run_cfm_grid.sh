@@ -7,6 +7,7 @@
 #SBATCH -o logs/cfm_grid_%A_%a.out
 #SBATCH -e logs/cfm_grid_%A_%a.err
 
+source /etc/profile
 set -euo pipefail
 
 source activate CFM
