@@ -10,7 +10,7 @@
 set -euo pipefail
 
 source /etc/profile
-conda activate CFM
+source activate CFM
 
 LATLON_FILE=${LATLON_FILE:-scripts/latlon_pairs.txt}
 RCM=${RCM:-RACMO}
