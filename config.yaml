@@ -3,7 +3,7 @@
 ### ----------------- Processing forcing data ----------------- ###
 
 ## Directories
-CFM_repo_path: /home/hpc/11/speersm/CFM_main # path to the Community Firn Model repository, should contain CFM_main folder
+CFM_repo_path: /home/hpc/11/speersm/CommunityFirnModel # path to the Community Firn Model repository, should contain CFM_main folder
 # MAR_data_path: /home/speersm/luna/CPOM/briggsk/RCM_data/Data/MAR/AIS/27.5km # path to MAR forcing data directory stored on luna
 RACMO_data_path: /storage/hpc/11/speersm/Feb_2026/ANT-12/ERA5/evaluation/day # path to RACMO forcing data directory stored on luna
 CFM_data_path: /storage/hpc/11/speersm/CFM_data # path to store CFM input and output data
