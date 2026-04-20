@@ -41,7 +41,7 @@ larsenC_box:
   lon_max: -55.0
 
 # RCM name to use for forcing data (e.g., MAR or RACMO)
-rcm_name: RACMO23
+rcm_name: RACMO
 
 ## MAR Sector
 sector: 1.0 # only take data from this sector in MAR files (think is ice vs non-ice)
