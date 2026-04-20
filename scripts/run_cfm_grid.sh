@@ -10,6 +10,8 @@
 source /etc/profile
 set -euo pipefail
 
+export HDF5_USE_FILE_LOCKING=FALSE
+
 echo "Reading from latlon file"
 LATLON_FILE=${LATLON_FILE:-scripts/latlon_pairs.txt}
 RCM=${RCM:-RACMO}
