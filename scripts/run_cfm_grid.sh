@@ -3,7 +3,7 @@
 #SBATCH -p serial
 #SBATCH -J CFM_grid_simulation
 #SBATCH --mem=20G
-#SBATCH --array=1-5
+#SBATCH --array=1-396
 #SBATCH -o logs/cfm_grid_%A_%a.out
 #SBATCH -e logs/cfm_grid_%A_%a.err
 
