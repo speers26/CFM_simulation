@@ -261,8 +261,7 @@ class ProcessRACMO(ProcessBase):
             var_file = next((file for file in year_files if f"{var}_" in file), None)
             if var_file is not None:
                 var_files.append(var_file)
-        # Use on-disk chunk structure to avoid splitting stored chunks (better Dask performance).
-        datasets = [xr.open_dataset(file, engine="netcdf4") for file in var_files]
+        datasets = [xr.open_dataset(file, engine="netcdf4", chunks="auto") for file in var_files]
         merged_dataset = xr.merge(datasets)
 
         return merged_dataset
@@ -396,7 +395,7 @@ class ProcessRACMO23(ProcessRACMO):
             if var_file is not None:
                 var_files.append(var_file)
         # Use on-disk chunk structure to avoid splitting stored chunks (better Dask performance).
-        datasets = [xr.open_dataset(file, engine="netcdf4") for file in var_files]
+        datasets = [xr.open_dataset(file, engine="netcdf4", chunks="auto") for file in var_files]
         merged_dataset = xr.merge(datasets, compat="override")
 
         return merged_dataset
