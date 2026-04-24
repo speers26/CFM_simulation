@@ -34,7 +34,7 @@ def read_output_data(file_path):
             # "compaction": ds["compaction"][1:, 1:],
             # dHOut from CFM update_dH: column index 2 in full DIP array,
             # units are meters of surface-height change per model step.
-            "dH_step": ds["DIP"][1:, 2],
+            "dH_step": ds["DIP"][1:, 3],
         }
 
     return results_dict
@@ -72,8 +72,8 @@ if __name__ == "__main__":
             output_df.to_csv(f"dh_dt_time_series_{lat}_{lon}_{phys_rho}.csv", index=False)
 
         plt.xlabel("Time")
-        plt.ylabel("dh/dt (m/day)")
-        plt.title("Rate of change of ice thickness (dh/dt) over time")
+        plt.ylabel("Surface elevation change (m)")
+        plt.title("Cumulative change in ice thickness")
         plt.legend()
         plt.grid()
         plt.savefig(f"dh_dt_time_series_{lat}_{lon}.png", dpi=300)
